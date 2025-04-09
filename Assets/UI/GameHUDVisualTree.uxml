@@ -1,0 +1,27 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/MenuStyle.uss?fileID=7433441132597879392&amp;guid=620184f79668714498b709f657f60cbe&amp;type=3#MenuStyle" />
+    <engine:VisualElement name="WinMenu" enabled="true" style="flex-grow: 1; display: none;">
+        <engine:VisualElement name="Background" class="panel" style="flex-grow: 1; background-color: rgb(197, 179, 114);">
+            <engine:Label text="Victory!" name="WinHeader" class="header" style="-unity-text-align: upper-center; color: rgb(29, 70, 29); letter-spacing: 0; -unity-font-style: normal; -unity-font-definition: url(&quot;project://database/Assets/UI/IMFePIsc29P.ttf?fileID=12800000&amp;guid=5677919c1e82a07429f8856f4df638fd&amp;type=3#IMFePIsc29P&quot;);" />
+            <engine:VisualElement name="WinButtonsContainer" class="container" style="flex-grow: 0; flex-direction: column; justify-content: space-around; align-self: center; align-items: stretch;">
+                <engine:Button text="Next Round" name="NextRoundButton" class="button" />
+                <engine:Button text="Exit" name="WinExitButton" class="button" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="LoseMenu" style="flex-grow: 1; opacity: 1; display: none; visibility: visible;">
+        <engine:VisualElement name="Background" class="panel" style="flex-grow: 1; background-color: rgba(197, 179, 114, 0);">
+            <engine:Label text="Defeat" name="LoseHeader" class="header" style="-unity-text-align: upper-center; color: rgb(89, 12, 12); -unity-font-definition: url(&quot;project://database/Assets/UI/IMFePIsc29P.ttf?fileID=12800000&amp;guid=5677919c1e82a07429f8856f4df638fd&amp;type=3#IMFePIsc29P&quot;); -unity-font-style: normal;" />
+            <engine:VisualElement name="LoseButtonsContainer" class="container" style="flex-grow: 0; flex-direction: column; justify-content: space-around; align-self: center; align-items: stretch;">
+                <engine:Button text="Restart Round" name="RestartRoundButton" class="button" style="-unity-text-align: upper-center;" />
+                <engine:Button text="Exit" name="LoseExitButton" class="button" />
+            </engine:VisualElement>
+        </engine:VisualElement>
+    </engine:VisualElement>
+    <engine:VisualElement name="GameHUD" style="flex-grow: 1; display: none;">
+        <engine:VisualElement name="sidebar" class="panel" style="flex-grow: 1; background-color: rgb(197, 179, 114); background-size: cover; align-self: flex-end;">
+            <engine:Button text="Button" class="button" />
+            <engine:Button text="Start" class="button" style="-unity-font-definition: url(&quot;project://database/Assets/UI/IMFePIrm29P.ttf?fileID=12800000&amp;guid=6056f8465cb2efc4caac7ebf8fceb40e&amp;type=3#IMFePIrm29P&quot;); bottom: auto; left: auto; right: auto; top: auto; -unity-text-align: upper-center; position: relative; align-self: stretch;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

@@ -1,8 +1,8 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/MainMenuStyle.uss?fileID=7433441132597879392&amp;guid=620184f79668714498b709f657f60cbe&amp;type=3#MainMenuStyle" />
-    <engine:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(197, 179, 114);">
+    <Style src="project://database/Assets/UI%20Toolkit/MenuStyle.uss?fileID=7433441132597879392&amp;guid=620184f79668714498b709f657f60cbe&amp;type=3#MenuStyle" />
+    <engine:VisualElement name="Background" style="flex-grow: 1; background-color: rgb(197, 179, 114); background-image: url(&quot;project://database/Assets/Sprites/UIBackground.png?fileID=2800000&amp;guid=2989f90b4b50bc24589536cee439e200&amp;type=3#UIBackground&quot;);">
         <engine:Label text="Crow&apos;s Nest" name="TitleLabel" emoji-fallback-support="false" class="header" />
-        <engine:VisualElement name="Container" class="container" style="flex-grow: 1; border-top-width: 6px; border-right-width: 6px; border-bottom-width: 6px; border-left-width: 6px; border-left-color: rgb(31, 31, 31); border-right-color: rgb(31, 31, 31); border-top-color: rgb(31, 31, 31); border-bottom-color: rgb(31, 31, 31); justify-content: flex-start; align-content: flex-start; align-self: flex-end; align-items: auto; margin-top: 24px; margin-right: 24px; margin-bottom: 24px; margin-left: 24px; padding-top: 12px; padding-right: 12px; padding-bottom: 12px; padding-left: 12px;">
+        <engine:VisualElement name="Container" class="container" style="flex-grow: 1; justify-content: flex-start; align-content: flex-start; align-self: flex-end; align-items: auto;">
             <engine:Button text="Start Game" name="StartGameButton" class="button" />
             <engine:Button text="Exit" name="ExitGameButton" class="button" style="-unity-font-definition: url(&quot;project://database/Assets/UI/IMFePIrm29P.ttf?fileID=12800000&amp;guid=6056f8465cb2efc4caac7ebf8fceb40e&amp;type=3#IMFePIrm29P&quot;); font-size: 100px;" />
         </engine:VisualElement>
