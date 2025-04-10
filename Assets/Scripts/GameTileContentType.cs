@@ -1,1 +1,1 @@
-public enum GameTileContentType { Empty, Destination, Wall }
+public enum GameTileContentType { Empty, Destination, Wall, SpawnPoint }

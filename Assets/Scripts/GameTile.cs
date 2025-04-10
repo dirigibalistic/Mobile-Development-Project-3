@@ -5,6 +5,7 @@ public class GameTile : MonoBehaviour
     [SerializeField] private Transform _arrow;
     [SerializeField] private Transform _grid;
     private GameTile _north, _south, _east, _west, _nextOnPath;
+    public GameTile NextTileOnPath => _nextOnPath;
     private int _distanceToDestination;
 
     private static Quaternion
@@ -28,6 +29,10 @@ public class GameTile : MonoBehaviour
 
     public bool HasPath => _distanceToDestination != int.MaxValue;
     public bool IsAlternative { get; set; }
+
+    public Vector3 ExitPoint { get; private set; }
+
+    public Direction PathDirection { get; private set; }
 
     public static void MakeEastWestNeighbors(GameTile east, GameTile west)
     {
@@ -53,9 +58,10 @@ public class GameTile : MonoBehaviour
     {
         _distanceToDestination = 0;
         _nextOnPath = null;
+        ExitPoint = transform.localPosition;
     }
 
-    private GameTile GrowPathTo(GameTile neighbor)
+    private GameTile GrowPathTo(GameTile neighbor, Direction direction)
     {
         Debug.Assert(HasPath, "No path");
         if (neighbor == null || neighbor.HasPath) return null;
@@ -63,13 +69,16 @@ public class GameTile : MonoBehaviour
         neighbor._distanceToDestination = _distanceToDestination + 1;
         neighbor._nextOnPath = this;
 
+        neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
+        neighbor.PathDirection = direction;
+
         return neighbor.Content.Type != GameTileContentType.Wall ? neighbor : null;
     }
 
-    public GameTile GrowPathNorth() => GrowPathTo(_north);
-    public GameTile GrowPathSouth() => GrowPathTo(_south);
-    public GameTile GrowPathEast() => GrowPathTo(_east);
-    public GameTile GrowPathWest() => GrowPathTo(_west);
+    public GameTile GrowPathNorth() => GrowPathTo(_north, Direction.South);
+    public GameTile GrowPathEast() => GrowPathTo(_east, Direction.West);
+    public GameTile GrowPathSouth() => GrowPathTo(_south, Direction.North);
+    public GameTile GrowPathWest() => GrowPathTo(_west, Direction.East);
 
     public void ShowPath()
     {

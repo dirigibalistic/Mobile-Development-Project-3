@@ -37,6 +37,8 @@ public class GamePlayState : State
     public override void Tick()
     {
         base.Tick();
+
+        _controller.BoardController.BoardTick();
         //check for win - round timer <= 0
 
         //check for lose - health <= 0

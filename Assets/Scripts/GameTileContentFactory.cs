@@ -1,17 +1,15 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 [CreateAssetMenu(fileName = "GameTileContentFactory", menuName = "Scriptable Objects/GameTileContentFactory")]
 
-public class GameTileContentFactory : ScriptableObject
+public class GameTileContentFactory : GameObjectFactory
 {
     //need to go look at some other tutorials and figure out what exactly is going on here
 
     [SerializeField] private GameTileContent destinationPrefab;
     [SerializeField] private GameTileContent emptyPrefab;
     [SerializeField] private GameTileContent wallPrefab;
-
-    private Scene _contentScene;
+    [SerializeField] private GameTileContent spawnPointPrefab;
 
     public void Reclaim(GameTileContent content)
     {
@@ -21,27 +19,9 @@ public class GameTileContentFactory : ScriptableObject
 
     private GameTileContent Get(GameTileContent prefab)
     {
-        GameTileContent instance = Instantiate(prefab);
+        GameTileContent instance = CreateGameObjectInstance(prefab);
         instance.OriginFactory = this;
-        MoveToFactoryScene(instance.gameObject);
         return instance;
-    }
-
-    private void MoveToFactoryScene(GameObject o)
-    {
-        if(!_contentScene.isLoaded)
-        {
-            if (Application.isEditor)
-            {
-                _contentScene = SceneManager.GetSceneByName(name);
-                if (!_contentScene.isLoaded)
-                {
-                    _contentScene = SceneManager.CreateScene(name);
-                }
-            }
-            else _contentScene = SceneManager.CreateScene(name);
-        }
-        SceneManager.MoveGameObjectToScene(o, _contentScene);
     }
 
     public GameTileContent Get(GameTileContentType type)
@@ -51,6 +31,7 @@ public class GameTileContentFactory : ScriptableObject
             case GameTileContentType.Destination: return Get(destinationPrefab);
             case GameTileContentType.Empty: return Get(emptyPrefab);
             case GameTileContentType.Wall: return Get(wallPrefab);
+            case GameTileContentType.SpawnPoint: return Get(spawnPointPrefab);
         }
         Debug.Assert(false, "Unsupported type: " + type);
         return null;

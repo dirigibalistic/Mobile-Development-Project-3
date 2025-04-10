@@ -503,7 +503,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boardSize: {x: 9, y: 9}
   _board: {fileID: 1812720532}
-  tileContentFactory: {fileID: 11400000, guid: 83680e477688757408d68816aff115e6, type: 2}
+  _tileContentFactory: {fileID: 11400000, guid: 83680e477688757408d68816aff115e6, type: 2}
+  _enemyFactory: {fileID: 11400000, guid: e7f2eb1937b881f4cbd5c05351bdecc1, type: 2}
+  _spawnSpeed: 1
 --- !u!1 &487464842
 GameObject:
   m_ObjectHideFlags: 0
