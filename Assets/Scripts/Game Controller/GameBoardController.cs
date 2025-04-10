@@ -41,6 +41,8 @@ public class GameBoardController : MonoBehaviour
             SpawnEnemy();
         }
         _enemies.GameUpdate();
+        Physics.SyncTransforms();
+        _board.GameUpdate();
     }
 
     private void SpawnEnemy()

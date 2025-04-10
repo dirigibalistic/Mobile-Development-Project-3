@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Tilemaps;
 
 public class GameBoard : MonoBehaviour
 {
@@ -46,6 +45,8 @@ public class GameBoard : MonoBehaviour
 
     private List<GameTile> _spawnPoints = new List<GameTile>();
     public int SpawnPointsCount => _spawnPoints.Count;
+
+    private List<GameTileContent> _updatingContent = new List<GameTileContent>();
 
     public void Initialize(Vector2Int size, GameTileContentFactory contentFactory)
     {
@@ -136,7 +137,7 @@ public class GameBoard : MonoBehaviour
 
     public GameTile GetTile(Ray ray)
     {
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, 1))
         {
             int x = (int)(hit.point.x + _size.x * 0.5f);
             int y = (int)(hit.point.z + _size.y * 0.5f);
@@ -199,6 +200,34 @@ public class GameBoard : MonoBehaviour
         }
     }
 
+    public void ToggleTower(GameTile tile)
+    {
+        if (tile.Content.Type == GameTileContentType.Tower)
+        {
+            _updatingContent.Remove(tile.Content);
+            tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+            FindPaths();
+        }
+        else if (tile.Content.Type == GameTileContentType.Empty)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentType.Tower);
+            if (FindPaths())
+            {
+                _updatingContent.Add(tile.Content);
+            }
+            else
+            {
+                tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+                FindPaths();
+            }
+        }
+        else if (tile.Content.Type == GameTileContentType.Wall)
+        {
+            tile.Content = _contentFactory.Get(GameTileContentType.Tower);
+            _updatingContent.Add(tile.Content);
+        }
+    }
+
     public void ToggleShowPaths()
     {
         ShowPaths = !ShowPaths;
@@ -207,5 +236,13 @@ public class GameBoard : MonoBehaviour
     public GameTile GetSpawnPoint(int index)
     {
         return _spawnPoints[index];
+    }
+
+    public void GameUpdate()
+    {
+        for(int i = 0; i < _updatingContent.Count; i++)
+        {
+            _updatingContent[i].GameUpdate();
+        }
     }
 }

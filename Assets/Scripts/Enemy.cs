@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,6 +25,8 @@ public class Enemy : MonoBehaviour
     private DirectionChange _directionChange;
     private float _directionAngleFrom, _directionAngleTo;
 
+    float Health { get; set; } = 100;
+
     public void SpawnOn(GameTile tile)
     {
         Debug.Assert(tile.NextTileOnPath != null, "Nowhere to go", this);
@@ -36,6 +39,13 @@ public class Enemy : MonoBehaviour
 
     public bool GameUpdate() //moves enemy, returns true if alive
     {
+        if (Health <= 0f)
+        {
+            DeathEffects();
+            OriginFactory.Reclaim(this);
+            return false;
+        }
+
         _progress += Time.deltaTime * _progressFactor;
         while(_progress >= 1f)
         {
@@ -136,5 +146,16 @@ public class Enemy : MonoBehaviour
         _model.localPosition = Vector3.zero;
         transform.localRotation = _direction.GetRotation();
         _progressFactor = 2f;
+    }
+
+    public void ApplyDamage(float damage)
+    {
+        Debug.Assert(damage >= 0f, "Negative damage applied");
+        Health -= damage;
+    }
+
+    private void DeathEffects()
+    {
+        throw new NotImplementedException();
     }
 }
