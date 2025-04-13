@@ -506,6 +506,7 @@ MonoBehaviour:
   _tileContentFactory: {fileID: 11400000, guid: 83680e477688757408d68816aff115e6, type: 2}
   _enemyFactory: {fileID: 11400000, guid: e7f2eb1937b881f4cbd5c05351bdecc1, type: 2}
   _spawnSpeed: 1
+  _warFactory: {fileID: 11400000, guid: cdb4ee4475e3aed43b9f0d8361c11e87, type: 2}
 --- !u!1 &487464842
 GameObject:
   m_ObjectHideFlags: 0

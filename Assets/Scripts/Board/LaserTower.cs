@@ -1,11 +1,10 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Tower : GameTileContent
+public class LaserTower : Tower
 {
-    [SerializeField, Range(1.5f, 10.5f)] private float _targetingRange = 1.5f;
-    [SerializeField] private Transform _turret, _laserBeam;
     [SerializeField, Range(1f, 100f)] private float _damagePerSecond = 10f;
+    [SerializeField] private Transform _turret, _laserBeam;
 
     private TargetPoint _target;
     private Vector3 _laserBeamScale;
@@ -13,6 +12,8 @@ public class Tower : GameTileContent
     static Collider[] _targetsBuffer = new Collider[100]; 
 
     const int enemyLayerMask = 1 << 9;
+
+    public override TowerType TowerType => TowerType.Laser;
 
     private void Awake()
     {
@@ -22,7 +23,7 @@ public class Tower : GameTileContent
     public override void GameUpdate()
     {
         base.GameUpdate();
-        if (TrackTarget() || AcquireTarget())
+        if (TrackTarget(ref _target) || AcquireTarget(out _target))
         {
             Shoot();
         }
@@ -42,44 +43,6 @@ public class Tower : GameTileContent
         {
             Gizmos.DrawLine(position, _target.Position);
         }
-    }
-
-    private bool AcquireTarget()
-    {
-        Vector3 a = transform.localPosition;
-        Vector3 b = a;
-        b.y += 3f;
-
-        int hits = Physics.OverlapCapsuleNonAlloc(a, b, _targetingRange, _targetsBuffer, enemyLayerMask);
-        if(hits > 0 )
-        {
-            _target = _targetsBuffer[Random.Range(0, hits)].GetComponent<TargetPoint>();
-            Debug.Assert(_target != null, "Targeted non-enemy", _targetsBuffer[0]);
-            return true;
-        }
-        _target = null;
-        return false;
-    }
-
-    private bool TrackTarget()
-    {
-        if(_target == null)
-        {
-            return false;
-        }
-
-        Vector3 a = transform.localPosition;
-        Vector3 b = _target.Position;
-        float x = a.x - b.x;
-        float z  = a.z - b.z;
-        float r = _targetingRange + 0.125f;
-
-        if (x * x + z * z > r * r)
-        {
-            _target = null;
-            return false;
-        }
-        return true;
     }
 
     private void Shoot()

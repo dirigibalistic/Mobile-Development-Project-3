@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : GameBehavior
 {
     [SerializeField] private Transform _model;
 
@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
         PrepareIntro();
     }
 
-    public bool GameUpdate() //moves enemy, returns true if alive
+    public override bool GameUpdate() //moves enemy, returns true if alive
     {
         if (Health <= 0f)
         {
