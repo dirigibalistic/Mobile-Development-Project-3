@@ -47,10 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32178d4d85116d74999e3b3b0abf5051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _type: 0
+  _type: 4
   _targetingRange: 3.5
   _shotsPerSecond: 1
   _mortar: {fileID: 8831397075973037328}
+  _shellBlastRadius: 0.5
+  _shellDamage: 1
 --- !u!1 &4992234574328240807
 GameObject:
   m_ObjectHideFlags: 0

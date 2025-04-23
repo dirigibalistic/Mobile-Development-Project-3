@@ -22,13 +22,16 @@ public class GameBoardController : MonoBehaviour
 
     private float _spawnProgress;
 
+    private GameTileContentType _selectedContentType = GameTileContentType.Empty;
     private TowerType _selectedTowerType;
 
     static GameBoardController instance;
+    private GameController _gameController;
 
     private void Awake()
     {
         _board.Initialize(_boardSize, _tileContentFactory);
+        _gameController = GetComponentInParent<GameController>();
     }
 
     private void OnEnable()
@@ -46,7 +49,10 @@ public class GameBoardController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
         GameTile tile = _board.GetTile(ray);
-        if(tile != null) _board.ToggleWall(tile);
+        if (tile != null)
+        {
+            _board.ChangeTileContent(tile, _selectedContentType, _selectedTowerType);
+        }
     }
 
     public void BoardTick()
@@ -83,5 +89,25 @@ public class GameBoardController : MonoBehaviour
         Explosion explosion = instance._warFactory.Explosion;
         instance._nonEnemies.Add(explosion);
         return explosion;
+    }
+    public void SetSelectedContent(GameTileContentType contentType)
+    {
+        _selectedContentType = contentType;
+    }
+
+    public void SetSelectedContent(TowerType towerType)
+    {
+        _selectedContentType = GameTileContentType.Tower;
+        _selectedTowerType = towerType;
+    }
+
+    public void ToggleGrid()
+    {
+        _board.ShowGrid = !_board.ShowGrid;
+    }
+
+    public void ToggleArrows()
+    {
+        _board.ShowPaths = !_board.ShowPaths;
     }
 }
