@@ -10,6 +10,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private GameHUDController _HUDController;
     [SerializeField] private GameSceneManager _sceneManager;
     [SerializeField] private GameBoardController _boardController;
+    [SerializeField] private PlayerData _playerData;
 
     public Unit PlayerShipPrefab => _playerShipPrefab;
     public Transform PlayerShipSpawnLocation => _playerShipSpawnLocation;
@@ -18,4 +19,5 @@ public class GameController : MonoBehaviour
     public GameHUDController HUDController => _HUDController;
     public GameSceneManager SceneManager => _sceneManager;
     public GameBoardController BoardController => _boardController;
+    public PlayerData PlayerData => _playerData;
 }

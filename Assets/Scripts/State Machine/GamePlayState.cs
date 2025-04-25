@@ -16,7 +16,7 @@ public class GamePlayState : State
         base.Enter();
         _controller.HUDController.ShowGameHUD();
 
-        _controller.Input.TouchStarted += OnTouch;
+        _controller.Input.TouchStarted += BoardTouch;
 
         Debug.Log("Entered state: GAMEPLAY");
         //listen for inputs
@@ -26,7 +26,7 @@ public class GamePlayState : State
     public override void Exit()
     {
         base.Exit();
-        _controller.Input.TouchStarted -= OnTouch;
+        _controller.Input.TouchStarted -= BoardTouch;
     }
 
     public override void FixedTick()
@@ -44,7 +44,7 @@ public class GamePlayState : State
         //check for lose - health <= 0
     }
 
-    private void OnTouch(Vector2 position)
+    private void BoardTouch(Vector2 position)
     {
         _controller.BoardController.HandleTouch(position);
     }

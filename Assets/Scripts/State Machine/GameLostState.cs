@@ -14,9 +14,14 @@ public class GameLostState : State
     public override void Enter()
     {
         base.Enter();
+        //show lose menu, save high score
+        if (_controller.BoardController.CurrentRound > SaveManager.Instance.ActiveSaveData.HighestLevel)
+        {
+            SaveManager.Instance.ActiveSaveData.HighestLevel = _controller.BoardController.CurrentRound;
+            SaveManager.Instance.Save();
+        }
         _controller.HUDController.ShowLoseMenu();
         Debug.Log("Entered state: LOSE");
-        //show win menu
     }
 
     public override void Exit()

@@ -5,8 +5,6 @@ public abstract class Tower : GameTileContent
 {
     [SerializeField, Range(1.5f, 10.5f)] protected private float _targetingRange = 1.5f;
 
-    public abstract TowerType TowerType { get; }
-
     protected private bool AcquireTarget(out TargetPoint target)
     {
         if(TargetPoint.FillBuffer(transform.localPosition, _targetingRange))

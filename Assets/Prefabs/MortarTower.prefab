@@ -48,11 +48,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 4
-  _targetingRange: 3.5
+  _price: 100
+  _targetingRange: 2.5
   _shotsPerSecond: 1
   _mortar: {fileID: 8831397075973037328}
-  _shellBlastRadius: 0.5
-  _shellDamage: 1
+  _shellBlastRadius: 1
+  _shellDamage: 25
 --- !u!1 &4992234574328240807
 GameObject:
   m_ObjectHideFlags: 0

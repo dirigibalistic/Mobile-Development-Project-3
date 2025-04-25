@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UIElements;
 
 public class GameBoardController : MonoBehaviour
@@ -23,10 +24,11 @@ public class GameBoardController : MonoBehaviour
     private float _spawnProgress;
 
     private GameTileContentType _selectedContentType = GameTileContentType.Empty;
-    private TowerType _selectedTowerType;
 
     static GameBoardController instance;
     private GameController _gameController;
+
+    public int CurrentRound { get; private set; } = 1;
 
     private void Awake()
     {
@@ -49,9 +51,38 @@ public class GameBoardController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(position);
         GameTile tile = _board.GetTile(ray);
+        int cost;
+
+        switch (_selectedContentType)
+        {
+            case GameTileContentType.Empty:
+                cost = 0;
+                break;
+            case GameTileContentType.Wall:
+                cost = 25;
+                break;
+            case GameTileContentType.LaserTower:
+                cost = 50;
+                break;
+            case GameTileContentType.MortarTower:
+                cost = 100;
+                break;
+            default:
+                Debug.Log("Trying to place unsupported type");
+                return;
+        }
+
         if (tile != null)
         {
-            _board.ChangeTileContent(tile, _selectedContentType, _selectedTowerType);
+            if (_gameController.PlayerData.SpendMoney(cost))
+            {
+                _gameController.PlayerData.GainMoney(tile.Content.Price);
+                _board.ChangeTileContent(tile, _selectedContentType);
+            }
+            else
+            {
+                Debug.Log("Not enough money");
+            }
         }
     }
 
@@ -93,12 +124,6 @@ public class GameBoardController : MonoBehaviour
     public void SetSelectedContent(GameTileContentType contentType)
     {
         _selectedContentType = contentType;
-    }
-
-    public void SetSelectedContent(TowerType towerType)
-    {
-        _selectedContentType = GameTileContentType.Tower;
-        _selectedTowerType = towerType;
     }
 
     public void ToggleGrid()

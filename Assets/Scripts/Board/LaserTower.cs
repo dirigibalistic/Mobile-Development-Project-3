@@ -13,8 +13,6 @@ public class LaserTower : Tower
 
     const int enemyLayerMask = 1 << 9;
 
-    public override TowerType TowerType => TowerType.Laser;
-
     private void Awake()
     {
         _laserBeamScale = _laserBeam.localScale;

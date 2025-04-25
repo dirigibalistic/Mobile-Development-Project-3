@@ -7,10 +7,14 @@ public class GameHUDController : MonoBehaviour
     private GameController _gameController;
 
     private UIDocument _document;
-    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu;
+    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu, _healthBarFill;
 
     private Button _winExitButton, _loseExitButton;
     private Button _buildButton, _destroyButton, _wallButton, _laserButton, _mortarButton, _arrowsButton, _gridButton, _pauseButton, _startButton;
+    private Label _moneyLabel;
+    private bool _gamePaused = false;
+
+    public event Action OnStartRoundPressed;
 
     private void Awake()
     {
@@ -34,6 +38,10 @@ public class GameHUDController : MonoBehaviour
         _gridButton = _gameHUD.Q("GridButton") as Button;
         _pauseButton = _gameHUD.Q("PauseButton") as Button;
         _startButton = _gameHUD.Q("StartButton") as Button;
+
+        _moneyLabel = _gameHUD.Q("MoneyLabel") as Label;
+        _healthBarFill = _gameHUD.Q("HealthBarFill");
+
 
         //i'm going insane. there must be an easier way to do this.
     }
@@ -104,7 +112,7 @@ public class GameHUDController : MonoBehaviour
 
     public void ToggleBuildMenu(ClickEvent evt)
     {
-        if (_buildMenu.style.display == DisplayStyle.None) _buildMenu.style.display = DisplayStyle.Flex;
+        if (_buildMenu.style.display != DisplayStyle.Flex) _buildMenu.style.display = DisplayStyle.Flex;
         else _buildMenu.style.display = DisplayStyle.None;
     }
 
@@ -127,12 +135,12 @@ public class GameHUDController : MonoBehaviour
 
     private void SelectLaser(ClickEvent evt)
     {
-        _gameController.BoardController.SetSelectedContent(TowerType.Laser);
+        _gameController.BoardController.SetSelectedContent(GameTileContentType.LaserTower);
     }
 
     private void SelectMortar(ClickEvent evt)
     {
-        _gameController.BoardController.SetSelectedContent(TowerType.Mortar);
+        _gameController.BoardController.SetSelectedContent(GameTileContentType.MortarTower);
     }
     private void ToggleGrid(ClickEvent evt)
     {
@@ -146,11 +154,29 @@ public class GameHUDController : MonoBehaviour
 
     private void TogglePause(ClickEvent evt)
     {
-        throw new NotImplementedException();
+        _gamePaused = !_gamePaused;
+        if (_gamePaused)
+        {
+            Time.timeScale = 0;
+        }
+        else 
+        {
+            Time.timeScale = 1; 
+        }
     }
 
     private void StartRound(ClickEvent evt)
     {
-        throw new NotImplementedException();
+        OnStartRoundPressed?.Invoke();
+    }
+
+    internal void UpdateHealthDisplay(float percent)
+    {
+       
+    }
+
+    internal void UpdateMoneyText(int money)
+    {
+        _moneyLabel.text = money.ToString();
     }
 }

@@ -14,9 +14,14 @@ public class GameWonState : State
     public override void Enter()
     {
         base.Enter();
+        //show win menu, save high score
+        if(_controller.BoardController.CurrentRound > SaveManager.Instance.ActiveSaveData.HighestLevel)
+        {
+            SaveManager.Instance.ActiveSaveData.HighestLevel = _controller.BoardController.CurrentRound;
+            SaveManager.Instance.Save();
+        }
         _controller.HUDController.ShowWinMenu();
         Debug.Log("Entered state: WIN");
-        //show win menu
     }
 
     public override void Exit()

@@ -6,7 +6,7 @@ public class GameBoard : MonoBehaviour
     [SerializeField] private Transform _ground;
     [SerializeField] private GameTile _tilePrefab;
 
-    private bool _showPaths = true;
+    private bool _showPaths = false;
     public bool ShowPaths
     {
         get => _showPaths;
@@ -200,7 +200,7 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public void ToggleTower(GameTile tile, TowerType towerType)
+    /*public void ToggleTower(GameTile tile, TowerType towerType)
     {
         if (tile.Content.Type == GameTileContentType.Tower)
         {
@@ -234,7 +234,7 @@ public class GameBoard : MonoBehaviour
             tile.Content = _contentFactory.Get(towerType);
             _updatingContent.Add(tile.Content);
         }
-    }
+    }*/
 
     public void ToggleShowPaths()
     {
@@ -254,11 +254,25 @@ public class GameBoard : MonoBehaviour
         }
     }
 
-    public bool ChangeTileContent(GameTile tile, GameTileContentType contentType, TowerType towerType)
+    public bool ChangeTileContent(GameTile tile, GameTileContentType contentType)
     {
-        if (tile.Content.Type == contentType && tile.Content.Type != GameTileContentType.Tower) return false;
+        if (tile.Content.Type == contentType)
+        {
+            Debug.Log("Building already present or space is already empty");
+            return false;
+        }
 
-        if (tile.Content.Type == GameTileContentType.Tower) _updatingContent.Remove(tile.Content);
+        if (tile.Content.Type == GameTileContentType.Destination || tile.Content.Type == GameTileContentType.SpawnPoint)
+        {
+            Debug.Log("Cannot remove enemy spawn or destination");
+            return false;
+        }
+
+        if (tile.Content.Type == GameTileContentType.LaserTower || tile.Content.Type == GameTileContentType.MortarTower)
+        {
+            _updatingContent.Remove(tile.Content);
+        }
+
         switch (contentType)
         {
             case GameTileContentType.Empty:
@@ -276,8 +290,22 @@ public class GameBoard : MonoBehaviour
                     return false;
                 }
 
-            case GameTileContentType.Tower:
-                tile.Content = _contentFactory.Get(towerType);
+            case GameTileContentType.LaserTower:
+                tile.Content = _contentFactory.Get(GameTileContentType.LaserTower);
+                if (FindPaths())
+                {
+                    _updatingContent.Add(tile.Content);
+                    return true;
+                }
+                else
+                {
+                    tile.Content = _contentFactory.Get(GameTileContentType.Empty);
+                    FindPaths();
+                    return false;
+                }
+
+            case GameTileContentType.MortarTower:
+                tile.Content = _contentFactory.Get(GameTileContentType.MortarTower);
                 if (FindPaths())
                 {
                     _updatingContent.Add(tile.Content);
@@ -291,9 +319,11 @@ public class GameBoard : MonoBehaviour
                 }
 
             case GameTileContentType.Destination:
+                Debug.Log("Cannot place destination");
                 return false;
 
             case GameTileContentType.SpawnPoint:
+                Debug.Log("Cannot place enemy spawn point");
                 return false;
 
             default: return false;

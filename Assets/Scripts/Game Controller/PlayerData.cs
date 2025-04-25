@@ -1,0 +1,58 @@
+using UnityEngine;
+
+public class PlayerData : MonoBehaviour
+{
+    [SerializeField]
+    private int _startingHealth;
+    private int _health;
+    public int Health => _health;
+
+    [SerializeField]
+    private int _startingMoney;
+    private int _money;
+    public int Money => _money;
+
+    private int _currentRound = 1;
+    public int CurrentRound => _currentRound;
+
+    private GameController _gameController;
+
+    private void Awake()
+    {
+        _gameController = GetComponentInParent<GameController>();
+        _money = _startingMoney;
+    }
+
+    private void Start()
+    {
+        _gameController.HUDController.UpdateMoneyText(_money);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        _health -= amount;
+        float healthPercent = _health / _startingHealth;
+        _gameController.HUDController.UpdateHealthDisplay(healthPercent);
+        if (_health <= 0) Die();
+    }
+
+    public bool SpendMoney(int amount)
+    {
+        if (_money < amount) return false;
+        _money -= amount;
+        _gameController.HUDController.UpdateMoneyText(_money);
+        return true;
+
+    }
+
+    public void GainMoney(int amount)
+    {
+        _money += amount;
+        _gameController.HUDController.UpdateMoneyText(_money);
+    }
+
+    private void Die()
+    {
+        
+    }
+}

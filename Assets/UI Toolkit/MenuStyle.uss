@@ -103,3 +103,27 @@
     align-self: center;
     color: rgb(31, 31, 31);
 }
+
+.unity-progress-bar__progress {
+    -unity-background-image-tint-color: rgb(255, 2, 0);
+    background-color: rgb(217, 35, 34);
+    background-image: url("project://database/Assets/Sprites/UIBackground.png?fileID=2800000&guid=2989f90b4b50bc24589536cee439e200&type=3#UIBackground");
+    -unity-background-scale-mode: scale-and-crop;
+    background-size: 100% 100%;
+}
+
+.unity-progress-bar__background {
+    -unity-background-scale-mode: scale-and-crop;
+    background-image: url("project://database/Assets/Sprites/UIBackground.png?fileID=2800000&guid=2989f90b4b50bc24589536cee439e200&type=3#UIBackground");
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(31, 31, 31);
+    border-right-color: rgb(31, 31, 31);
+    border-top-color: rgb(31, 31, 31);
+    border-bottom-color: rgb(31, 31, 31);
+}
+
+.unity-progress-bar__container {
+}

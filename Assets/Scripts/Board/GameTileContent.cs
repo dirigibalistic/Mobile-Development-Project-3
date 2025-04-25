@@ -6,7 +6,11 @@ public class GameTileContent : MonoBehaviour
     [SerializeField] private GameTileContentType _type;
     private GameTileContentFactory _originFactory;
     public GameTileContentType Type => _type;
-    public bool BlocksPath => Type == GameTileContentType.Wall || Type == GameTileContentType.Tower;
+    public bool BlocksPath => Type == GameTileContentType.Wall || Type == GameTileContentType.LaserTower || Type == GameTileContentType.MortarTower;
+
+    [SerializeField]
+    private int _price;
+    public int Price => _price;
 
     public GameTileContentFactory OriginFactory
     {

@@ -11,8 +11,6 @@ public class MortarTower : Tower
     private float _launchSpeed;
     private float _launchProgress;
 
-    public override TowerType TowerType => TowerType.Mortar;
-
     private void Awake()
     {
         OnValidate();
@@ -27,8 +25,6 @@ public class MortarTower : Tower
 
     public override void GameUpdate()
     {
-        base.GameUpdate();
-
         _launchProgress += _shotsPerSecond * Time.deltaTime;
         while(_launchProgress >= 1f)
         {
@@ -67,23 +63,23 @@ public class MortarTower : Tower
         Debug.Assert(r >= 0f, "Launch velocity not sufficient for range");
         float tanTheta = (s2 + Mathf.Sqrt(r)) / (g * x);
         float cosTheta = Mathf.Cos(Mathf.Atan(tanTheta));
-        float sinTheta = cosTheta + tanTheta;
+        float sinTheta = cosTheta * tanTheta;
 
         _mortar.localRotation = Quaternion.LookRotation(new Vector3(dir.x, tanTheta, dir.y));
 
-        GameBoardController.SpawnShell().Initialize(launchPoint, targetPoint, new Vector3(s * cosTheta * dir.x, s * sinTheta * dir.y), _shellBlastRadius, _shellDamage);
+        GameBoardController.SpawnShell().Initialize(launchPoint, targetPoint, new Vector3(s * cosTheta * dir.x, s * sinTheta, s * cosTheta * dir.y), _shellBlastRadius, _shellDamage);
 
-        /*
+        
         Vector3 prev = launchPoint, next;
         for (int i = 1; i <= 10; i++)
         {
             float t = i / 10f;
             float dx = s * cosTheta * t;
             float dy = s * sinTheta * t - 0.5f * g * t * t;
-            next = launchPoint + new Vector3(dir.x + dx, dy, dir.y * dx);
+            next = launchPoint + new Vector3(dir.x * dx, dy, dir.y * dx);
             Debug.DrawLine(prev, next, Color.blue, 1f);
             prev = next;
         }
-        */
+        
     }
 }

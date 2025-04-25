@@ -29,9 +29,9 @@ public class Shell : WarEntity
 
         transform.localPosition = p;
 
-        Vector3 d = _launchVelocity;
+        /* Vector3 d = _launchVelocity;
         d.y -= 9.81f * _age;
-        transform.localRotation = Quaternion.LookRotation(d);
+        transform.localRotation = Quaternion.LookRotation(d); */ //don't need rotation for cannonballs
         return true;
     }
 }

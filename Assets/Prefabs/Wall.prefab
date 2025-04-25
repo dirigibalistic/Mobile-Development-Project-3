@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 2
+  _price: 25
 --- !u!1 &5185232952870080549
 GameObject:
   m_ObjectHideFlags: 0

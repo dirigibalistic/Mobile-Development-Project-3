@@ -10,7 +10,8 @@ public class GameTileContentFactory : GameObjectFactory
     [SerializeField] private GameTileContent _emptyPrefab;
     [SerializeField] private GameTileContent _wallPrefab;
     [SerializeField] private GameTileContent _spawnPointPrefab;
-    [SerializeField] private Tower[] _towerPrefabs;
+    [SerializeField] private GameTileContent _laserTowerPrefab;
+    [SerializeField] private GameTileContent _mortarTowerPrefab;
 
     public void Reclaim(GameTileContent content)
     {
@@ -33,16 +34,10 @@ public class GameTileContentFactory : GameObjectFactory
             case GameTileContentType.Empty: return Get(_emptyPrefab);
             case GameTileContentType.Wall: return Get(_wallPrefab);
             case GameTileContentType.SpawnPoint: return Get(_spawnPointPrefab);
+            case GameTileContentType.LaserTower: return Get(_laserTowerPrefab);
+            case GameTileContentType.MortarTower: return Get(_mortarTowerPrefab);
         }
         Debug.Assert(false, "Unsupported non-tower type: " + type);
         return null;
-    }
-
-    public Tower Get(TowerType type)
-    {
-        Debug.Assert((int)type < _towerPrefabs.Length, "Unsupported tower type");
-        Tower prefab = _towerPrefabs[(int)type];
-        Debug.Assert(type == prefab.TowerType, "Tower prefab at wrong index");
-        return Get(prefab);
     }
 }

@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _type: 4
+  _price: 50
   _targetingRange: 1.5
   _damagePerSecond: 10
   _turret: {fileID: 8831397075973037328}

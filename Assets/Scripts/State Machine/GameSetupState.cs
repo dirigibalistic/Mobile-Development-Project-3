@@ -33,6 +33,6 @@ public class GameSetupState : State
     public override void Tick()
     {
         base.Tick();
-        _stateMachine.ChangeState(_stateMachine.PlayState);
+        _stateMachine.ChangeState(_stateMachine.PreparationState);
     }
 }

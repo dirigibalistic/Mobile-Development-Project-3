@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem.EnhancedTouch;
 
@@ -15,7 +16,10 @@ public class GamePreparationState : State
     public override void Enter()
     {
         base.Enter();
-        _controller.Input.TouchStarted += OnTouch;
+        _controller.Input.TouchStarted += BoardTouch;
+        _controller.HUDController.OnStartRoundPressed += StartRoundPressed;
+        _controller.HUDController.ShowGameHUD();
+
         Debug.Log("Entered state: PREPARATION");
         //let player place turrets
         //end when they hit "ready" button, move into play state
@@ -24,7 +28,8 @@ public class GamePreparationState : State
     public override void Exit()
     {
         base.Exit();
-        _controller.Input.TouchStarted -= OnTouch;
+        _controller.Input.TouchStarted -= BoardTouch;
+        _controller.HUDController.OnStartRoundPressed -= StartRoundPressed;
     }
 
     public override void FixedTick()
@@ -37,8 +42,12 @@ public class GamePreparationState : State
         base.Tick();
     }
 
-    private void OnTouch(Vector2 position)
+    private void BoardTouch(Vector2 position)
     {
         _controller.BoardController.HandleTouch(position);
+    }
+    private void StartRoundPressed()
+    {
+        _stateMachine.ChangeState(_stateMachine.PlayState);
     }
 }

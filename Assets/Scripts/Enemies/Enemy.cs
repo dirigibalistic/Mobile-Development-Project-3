@@ -1,10 +1,12 @@
 using System;
+using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 
 public class Enemy : GameBehavior
 {
     [SerializeField] private Transform _model;
+    [SerializeField] private RectTransform _healthBarFill;
 
     private EnemyFactory _originFactory;
     public EnemyFactory OriginFactory
@@ -26,6 +28,7 @@ public class Enemy : GameBehavior
     private float _directionAngleFrom, _directionAngleTo;
 
     float Health { get; set; } = 100;
+    private float _startingHealth;
 
     public void SpawnOn(GameTile tile)
     {
@@ -34,6 +37,7 @@ public class Enemy : GameBehavior
         _tileTo = tile.NextTileOnPath;
 
         _progress = 0f;
+        _startingHealth = Health;
         PrepareIntro();
     }
 
@@ -152,10 +156,11 @@ public class Enemy : GameBehavior
     {
         Debug.Assert(damage >= 0f, "Negative damage applied");
         Health -= damage;
+        _healthBarFill.localScale = new Vector3(math.remap(0, _startingHealth, 0, 1, Health), 1f, 1f);
     }
 
     private void DeathEffects()
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
 }
