@@ -13,13 +13,8 @@ public class GameSceneManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void NextRound()
-    {
-
-    }
-
     public void RestartRound()
     {
-
+        SceneManager.LoadScene("Level1");
     }
 }

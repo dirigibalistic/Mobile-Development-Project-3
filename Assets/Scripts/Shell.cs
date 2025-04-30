@@ -4,6 +4,7 @@ public class Shell : WarEntity
 {
     private Vector3 _launchPoint, _targetPoint, _launchVelocity;
     private float _age, _blastRadius, _damage;
+    [SerializeField] private AudioClip _explosionSound;
 
     public void Initialize(Vector3 launchPoint, Vector3 targetPoint, Vector3 launchVelocity, float blastRadius, float damage)
     {
@@ -23,6 +24,7 @@ public class Shell : WarEntity
         if (p.y <= 0f)
         {
             GameBoardController.SpawnExplosion().Initialize(_targetPoint, _blastRadius, _damage);
+            AudioSource.PlayClipAtPoint(_explosionSound, transform.position);
             OriginFactory.Reclaim(this);
             return false;
         }

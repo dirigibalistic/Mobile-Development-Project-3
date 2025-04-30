@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GamePlayState : State
@@ -15,18 +16,19 @@ public class GamePlayState : State
     {
         base.Enter();
         _controller.HUDController.ShowGameHUD();
-
         _controller.Input.TouchStarted += BoardTouch;
+        _controller.BoardController.OnRoundWon += WinRound;
+        _controller.PlayerData.OnPlayerDeath += LoseRound;
 
         Debug.Log("Entered state: GAMEPLAY");
-        //listen for inputs
-        //start spawning enemies
     }
 
     public override void Exit()
     {
         base.Exit();
         _controller.Input.TouchStarted -= BoardTouch;
+        _controller.BoardController.OnRoundWon -= WinRound;
+        _controller.PlayerData.OnPlayerDeath -= LoseRound;
     }
 
     public override void FixedTick()
@@ -37,15 +39,21 @@ public class GamePlayState : State
     public override void Tick()
     {
         base.Tick();
-
         _controller.BoardController.BoardTick();
-        //check for win - round timer <= 0
-
-        //check for lose - health <= 0
     }
 
     private void BoardTouch(Vector2 position)
     {
         _controller.BoardController.HandleTouch(position);
+    }
+
+    private void WinRound()
+    {
+        _stateMachine.ChangeState(_stateMachine.WonState);
+    }
+
+    private void LoseRound()
+    {
+        _stateMachine.ChangeState(_stateMachine.LostState);
     }
 }

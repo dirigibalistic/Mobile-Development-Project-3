@@ -15,9 +15,9 @@ public class GameLostState : State
     {
         base.Enter();
         //show lose menu, save high score
-        if (_controller.BoardController.CurrentRound > SaveManager.Instance.ActiveSaveData.HighestLevel)
+        if (_controller.PlayerData.CurrentRound > SaveManager.Instance.ActiveSaveData.HighestLevel)
         {
-            SaveManager.Instance.ActiveSaveData.HighestLevel = _controller.BoardController.CurrentRound;
+            SaveManager.Instance.ActiveSaveData.HighestLevel = _controller.PlayerData.CurrentRound;
             SaveManager.Instance.Save();
         }
         _controller.HUDController.ShowLoseMenu();

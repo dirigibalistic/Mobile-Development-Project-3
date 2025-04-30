@@ -5,13 +5,16 @@ using UnityEngine.UIElements;
 public class GameHUDController : MonoBehaviour
 {
     private GameController _gameController;
+    [SerializeField] private AudioClip _buttonSound;
+    [SerializeField] private AudioClip _startRoundSound;
 
     private UIDocument _document;
-    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu, _healthBarFill;
+    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu;
 
     private Button _winExitButton, _loseExitButton;
-    private Button _buildButton, _destroyButton, _wallButton, _laserButton, _mortarButton, _arrowsButton, _gridButton, _pauseButton, _startButton;
+    private Button _buildButton, _destroyButton, _wallButton, _laserButton, _mortarButton, _arrowsButton, _gridButton, _pauseButton, _startButton, _winNextRoundButton, _loseRestartButton;
     private Label _moneyLabel;
+    private ProgressBar _healthBar;
     private bool _gamePaused = false;
 
     public event Action OnStartRoundPressed;
@@ -28,6 +31,8 @@ public class GameHUDController : MonoBehaviour
 
         _winExitButton = _winMenu.Q("WinExitButton") as Button;
         _loseExitButton = _loseMenu.Q("LoseExitButton") as Button;
+        _winNextRoundButton = _winMenu.Q("NextRoundButton") as Button;
+        _loseRestartButton = _loseMenu.Q("RestartRoundButton") as Button;
 
         _buildButton = _gameHUD.Q("BuildButton") as Button;
         _destroyButton = _gameHUD.Q("DestroyButton") as Button;
@@ -40,7 +45,7 @@ public class GameHUDController : MonoBehaviour
         _startButton = _gameHUD.Q("StartButton") as Button;
 
         _moneyLabel = _gameHUD.Q("MoneyLabel") as Label;
-        _healthBarFill = _gameHUD.Q("HealthBarFill");
+        _healthBar = _gameHUD.Q("HealthBar") as ProgressBar;
 
 
         //i'm going insane. there must be an easier way to do this.
@@ -55,6 +60,8 @@ public class GameHUDController : MonoBehaviour
     {
         _winExitButton.RegisterCallback<ClickEvent>(ExitToMenu);
         _loseExitButton.RegisterCallback<ClickEvent>(ExitToMenu);
+        _winNextRoundButton.RegisterCallback<ClickEvent>(NextRound);
+        _loseRestartButton.RegisterCallback<ClickEvent>(RestartRound);
 
         _buildButton.RegisterCallback<ClickEvent>(ToggleBuildMenu);
         _destroyButton.RegisterCallback<ClickEvent>(SelectEmpty);
@@ -73,6 +80,8 @@ public class GameHUDController : MonoBehaviour
     {
         _winExitButton.UnregisterCallback<ClickEvent>(ExitToMenu);
         _loseExitButton.UnregisterCallback<ClickEvent>(ExitToMenu);
+        _winNextRoundButton.UnregisterCallback<ClickEvent>(NextRound);
+        _loseRestartButton.UnregisterCallback<ClickEvent>(RestartRound);
 
         _buildButton.UnregisterCallback<ClickEvent>(ToggleBuildMenu);
         _destroyButton.UnregisterCallback<ClickEvent>(SelectEmpty);
@@ -89,6 +98,7 @@ public class GameHUDController : MonoBehaviour
 
     private void ExitToMenu(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.SceneManager.ExitToMenu();
     }
 
@@ -112,8 +122,8 @@ public class GameHUDController : MonoBehaviour
 
     public void ToggleBuildMenu(ClickEvent evt)
     {
-        if (_buildMenu.style.display != DisplayStyle.Flex) _buildMenu.style.display = DisplayStyle.Flex;
-        else _buildMenu.style.display = DisplayStyle.None;
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _buildMenu.SetEnabled(!_buildMenu.enabledInHierarchy);
     }
 
     private void HideAllMenus()
@@ -125,35 +135,42 @@ public class GameHUDController : MonoBehaviour
 
     private void SelectEmpty(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.SetSelectedContent(GameTileContentType.Empty);
     }
 
     private void SelectWall(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.SetSelectedContent(GameTileContentType.Wall);
     }
 
     private void SelectLaser(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.SetSelectedContent(GameTileContentType.LaserTower);
     }
 
     private void SelectMortar(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.SetSelectedContent(GameTileContentType.MortarTower);
     }
     private void ToggleGrid(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.ToggleGrid();
     }
 
     private void ToggleArrows(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gameController.BoardController.ToggleArrows();
     }
 
     private void TogglePause(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         _gamePaused = !_gamePaused;
         if (_gamePaused)
         {
@@ -167,16 +184,29 @@ public class GameHUDController : MonoBehaviour
 
     private void StartRound(ClickEvent evt)
     {
+        AudioHelper.PlayClip2D(_startRoundSound, 0.5f);
         OnStartRoundPressed?.Invoke();
     }
 
     internal void UpdateHealthDisplay(float percent)
     {
-       
+        _healthBar.value = percent;
     }
 
     internal void UpdateMoneyText(int money)
     {
         _moneyLabel.text = money.ToString();
+    }
+
+    private void NextRound(ClickEvent evt)
+    {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.PlayerData.NextRound();
+    }
+
+    private void RestartRound(ClickEvent evt)
+    {
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.SceneManager.RestartRound();
     }
 }

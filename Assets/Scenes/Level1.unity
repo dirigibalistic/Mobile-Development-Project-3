@@ -438,6 +438,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a4c0ca94b95424cb23955e366d2519, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _buttonSound: {fileID: 8300000, guid: 7f9de017abcfe6147a63626ba6aa0225, type: 3}
+  _startRoundSound: {fileID: 8300000, guid: 537d646916f458f4285e093d76b5798b, type: 3}
 --- !u!114 &332418046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -507,6 +509,7 @@ MonoBehaviour:
   _enemyFactory: {fileID: 11400000, guid: e7f2eb1937b881f4cbd5c05351bdecc1, type: 2}
   _spawnSpeed: 1
   _warFactory: {fileID: 11400000, guid: cdb4ee4475e3aed43b9f0d8361c11e87, type: 2}
+  _buttonSound: {fileID: 8300000, guid: 7f9de017abcfe6147a63626ba6aa0225, type: 3}
 --- !u!1 &487464842
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerData : MonoBehaviour
@@ -17,10 +18,14 @@ public class PlayerData : MonoBehaviour
 
     private GameController _gameController;
 
+    public event Action OnPlayerDeath;
+    public event Action OnNextRound;
+
     private void Awake()
     {
         _gameController = GetComponentInParent<GameController>();
         _money = _startingMoney;
+        _health = _startingHealth;
     }
 
     private void Start()
@@ -31,7 +36,7 @@ public class PlayerData : MonoBehaviour
     public void TakeDamage(int amount)
     {
         _health -= amount;
-        float healthPercent = _health / _startingHealth;
+        float healthPercent = (float)_health / (float)_startingHealth;
         _gameController.HUDController.UpdateHealthDisplay(healthPercent);
         if (_health <= 0) Die();
     }
@@ -53,6 +58,18 @@ public class PlayerData : MonoBehaviour
 
     private void Die()
     {
-        
+        OnPlayerDeath?.Invoke();
+    }
+
+    public void NextRound()
+    {
+        _currentRound++;
+        OnNextRound?.Invoke();
+    }
+
+    internal void NewRoundReset()
+    {
+        _health = _startingHealth;
+        _money = _startingMoney;
     }
 }

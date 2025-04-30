@@ -14,10 +14,20 @@ public class GameSetupState : State
     public override void Enter()
     {
         base.Enter();
-
         Debug.Log("Entered state: SETUP");
-        //load save
-        //spawn units
+
+        int currentRound = _controller.PlayerData.CurrentRound;
+        int boardLength = Mathf.Clamp(currentRound + 4, 5, 12);
+
+        //boards all square for now, could add more variety later.
+        //5 feels like the bare minimum to be playable
+        //12 is the biggest that can fit on screen without zooming out so much it's unreadable to me
+
+        int spawnPointsNumber = currentRound / 2 + 1;
+        int totalEnemies = currentRound * 10;
+
+        _controller.BoardController.InitializeBoard(new Vector2Int(boardLength,boardLength), spawnPointsNumber, totalEnemies);
+        _controller.PlayerData.NewRoundReset();
     }
 
     public override void Exit()

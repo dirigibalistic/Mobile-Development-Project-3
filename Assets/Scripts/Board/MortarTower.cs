@@ -7,6 +7,7 @@ public class MortarTower : Tower
     [SerializeField] private Transform _mortar;
     [SerializeField, Range(0.5f, 3f)] private float _shellBlastRadius = 1f;
     [SerializeField, Range(1f, 100f)] private float _shellDamage = 10f;
+    [SerializeField] private AudioClip _fireSound;
 
     private float _launchSpeed;
     private float _launchProgress;
@@ -14,6 +15,7 @@ public class MortarTower : Tower
     private void Awake()
     {
         OnValidate();
+        _launchProgress = Random.Range(0, .99f);
     }
 
     private void OnValidate()
@@ -67,6 +69,7 @@ public class MortarTower : Tower
 
         _mortar.localRotation = Quaternion.LookRotation(new Vector3(dir.x, tanTheta, dir.y));
 
+        AudioSource.PlayClipAtPoint(_fireSound, transform.position);
         GameBoardController.SpawnShell().Initialize(launchPoint, targetPoint, new Vector3(s * cosTheta * dir.x, s * sinTheta, s * cosTheta * dir.y), _shellBlastRadius, _shellDamage);
 
         

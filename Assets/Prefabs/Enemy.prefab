@@ -300,6 +300,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _model: {fileID: 2277004948592729345}
   _healthBarFill: {fileID: 4656606468702029425}
+  _moneyValue: 25
+  _damage: 15
+  _deathParticles: {fileID: 854249098098044300, guid: 67f04417f39124944b7e66b70c73e9ad, type: 3}
+  _deathSound: {fileID: 8300000, guid: d872226ef9224b64cb60ed43661a536f, type: 3}
 --- !u!1 &4876693226310623740
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,7 +416,7 @@ SpriteRenderer:
   m_SortingLayer: 1
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: e014e64310a55c84dbb58c4720673afb, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.4198113, b: 0.4198113, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

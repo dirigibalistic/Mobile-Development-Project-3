@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Tilemaps;
+using System.Linq;
 
 public class GameBoard : MonoBehaviour
 {
@@ -48,7 +50,7 @@ public class GameBoard : MonoBehaviour
 
     private List<GameTileContent> _updatingContent = new List<GameTileContent>();
 
-    public void Initialize(Vector2Int size, GameTileContentFactory contentFactory)
+    public void Initialize(Vector2Int size, GameTileContentFactory contentFactory, int spawnPointNumber)
     {
         this._size = size;
         this._contentFactory = contentFactory;
@@ -57,7 +59,22 @@ public class GameBoard : MonoBehaviour
 
         Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 
-        _tiles = new GameTile[size.x * size.y];
+        #region reset
+        foreach (GameTile tile in FindObjectsByType<GameTile>(FindObjectsSortMode.None))
+        {
+            Destroy(tile.gameObject);
+        }
+        foreach(GameTileContent content in FindObjectsByType<GameTileContent>(FindObjectsSortMode.None))
+        {
+            Destroy(content.gameObject);
+        }
+        _spawnPoints = new List<GameTile>();
+        _updatingContent = new List<GameTileContent>();
+    #endregion
+    //deletes old tiles, etc. to reinitialize the board for a new wave
+    //this is messy and probably the wrong way to do this but it does seem to work
+
+    _tiles = new GameTile[size.x * size.y];
         for (int i = 0, y = 0; y < size.y; y++)
         {
             for (int x = 0; x < size.x; x++, i++)
@@ -83,8 +100,23 @@ public class GameBoard : MonoBehaviour
             }
         }
 
-        ToggleDestination(_tiles[_tiles.Length / 2]);
-        ToggleSpawnPoint(_tiles[0]);
+        int destinationIndex = Random.Range(0, _tiles.Length);
+        int[] spawnPointIndices = new int[spawnPointNumber];
+
+        ToggleDestination(_tiles[destinationIndex]);
+
+        for (int i = 0; i < spawnPointNumber; i++)
+        {
+            int value = Random.Range(0, _tiles.Length);
+            while (spawnPointIndices.Contains(value) || value == destinationIndex || //don't put spawn point on destination or other spawn points
+                value == destinationIndex + size.x || value == destinationIndex - size.x || //don't put spawn point directly adjacent to destination
+                value == destinationIndex + 1 || value == destinationIndex - 1)
+            {
+                value = Random.Range(0, _tiles.Length);
+            }
+            spawnPointIndices[i] = value;
+            ToggleSpawnPoint(_tiles[value]);
+        }
     }
 
     private bool FindPaths()
@@ -285,6 +317,7 @@ public class GameBoard : MonoBehaviour
                 if(FindPaths()) return true;
                 else
                 {
+                    Debug.Log("Cannot block all enemy paths");
                     tile.Content = _contentFactory.Get(GameTileContentType.Empty);
                     FindPaths();
                     return false;
@@ -299,6 +332,7 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("Cannot block all enemy paths");
                     tile.Content = _contentFactory.Get(GameTileContentType.Empty);
                     FindPaths();
                     return false;
@@ -313,6 +347,7 @@ public class GameBoard : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("Cannot block all enemy paths");
                     tile.Content = _contentFactory.Get(GameTileContentType.Empty);
                     FindPaths();
                     return false;

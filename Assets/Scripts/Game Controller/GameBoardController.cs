@@ -1,6 +1,7 @@
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.UIElements;
+using System;
+using UnityEngine.Timeline;
+using UnityEngine.Audio;
 
 public class GameBoardController : MonoBehaviour
 {
@@ -22,17 +23,21 @@ public class GameBoardController : MonoBehaviour
     private GameBehaviorCollection _nonEnemies = new GameBehaviorCollection();
 
     private float _spawnProgress;
+    private int _totalEnemiesToSpawn;
+    private int _spawnsRemaining;
+    private int _enemiesKilled;
+
+    public event Action OnRoundWon;
 
     private GameTileContentType _selectedContentType = GameTileContentType.Empty;
 
     static GameBoardController instance;
     private GameController _gameController;
 
-    public int CurrentRound { get; private set; } = 1;
+    [SerializeField] private AudioClip _buttonSound;
 
     private void Awake()
     {
-        _board.Initialize(_boardSize, _tileContentFactory);
         _gameController = GetComponentInParent<GameController>();
     }
 
@@ -77,19 +82,21 @@ public class GameBoardController : MonoBehaviour
             if (_gameController.PlayerData.SpendMoney(cost))
             {
                 _gameController.PlayerData.GainMoney(tile.Content.Price);
-                _board.ChangeTileContent(tile, _selectedContentType);
+                if(!_board.ChangeTileContent(tile, _selectedContentType)) _gameController.PlayerData.GainMoney(cost);
             }
             else
             {
                 Debug.Log("Not enough money");
             }
+
+            AudioHelper.PlayClip2D(_buttonSound, 0.5f);
         }
     }
 
     public void BoardTick()
     {
         _spawnProgress += _spawnSpeed * Time.deltaTime;
-        while(_spawnProgress >= 1f)
+        while(_spawnProgress >= 1f && _spawnsRemaining > 0)
         {
             _spawnProgress--;
             SpawnEnemy();
@@ -98,14 +105,20 @@ public class GameBoardController : MonoBehaviour
         Physics.SyncTransforms();
         _board.GameUpdate();
         _nonEnemies.GameUpdate();
+
+        if(_enemiesKilled >= _totalEnemiesToSpawn)
+        {
+            OnRoundWon?.Invoke();
+        }
     }
 
     private void SpawnEnemy()
     {
-        GameTile spawnPoint = _board.GetSpawnPoint(Random.Range(0,_board.SpawnPointsCount));
+        GameTile spawnPoint = _board.GetSpawnPoint(UnityEngine.Random.Range(0,_board.SpawnPointsCount));
         Enemy enemy = _enemyFactory.Get();
-        enemy.SpawnOn(spawnPoint);
+        enemy.SpawnOn(spawnPoint, this);
         _enemies.Add(enemy);
+        _spawnsRemaining--;
     }
 
     public static Shell SpawnShell()
@@ -134,5 +147,27 @@ public class GameBoardController : MonoBehaviour
     public void ToggleArrows()
     {
         _board.ShowPaths = !_board.ShowPaths;
+    }
+
+    public void InitializeBoard(Vector2Int size, int spawnPointNumber, int totalEnemyNumber)
+    {
+        _totalEnemiesToSpawn = totalEnemyNumber;
+        _spawnsRemaining = _totalEnemiesToSpawn;
+        _enemiesKilled = 0;
+
+        _board.Initialize(size, _tileContentFactory, spawnPointNumber);
+    }
+
+    public void EnemyKilled(int money)
+    {
+        _gameController.PlayerData.GainMoney(money);
+        _enemiesKilled++;
+        //update hud?
+    }
+
+    internal void EnemyReachedDestination(int damage)
+    {
+        _gameController.PlayerData.TakeDamage(damage);
+        _enemiesKilled++;
     }
 }

@@ -8,6 +8,13 @@ public class Enemy : GameBehavior
     [SerializeField] private Transform _model;
     [SerializeField] private RectTransform _healthBarFill;
 
+    [SerializeField] private int _moneyValue;
+    [SerializeField] private int _damage;
+
+    [SerializeField] private ParticleSystem _deathParticles;
+    [SerializeField] private AudioClip _deathSound;
+
+    private GameBoardController _boardController;
     private EnemyFactory _originFactory;
     public EnemyFactory OriginFactory
     {
@@ -30,8 +37,9 @@ public class Enemy : GameBehavior
     float Health { get; set; } = 100;
     private float _startingHealth;
 
-    public void SpawnOn(GameTile tile)
+    public void SpawnOn(GameTile tile, GameBoardController boardController)
     {
+        _boardController = boardController;
         Debug.Assert(tile.NextTileOnPath != null, "Nowhere to go", this);
         _tileFrom = tile;
         _tileTo = tile.NextTileOnPath;
@@ -46,6 +54,7 @@ public class Enemy : GameBehavior
         if (Health <= 0f)
         {
             DeathEffects();
+            _boardController.EnemyKilled(_moneyValue); //killed by player, so gain money
             OriginFactory.Reclaim(this);
             return false;
         }
@@ -55,6 +64,7 @@ public class Enemy : GameBehavior
         {
             if(_tileTo == null)
             {
+                _boardController.EnemyReachedDestination(_damage); //reached destination, damage player
                 OriginFactory.Reclaim(this);
                 return false;
             }
@@ -161,6 +171,7 @@ public class Enemy : GameBehavior
 
     private void DeathEffects()
     {
-        //throw new NotImplementedException();
+        Instantiate(_deathParticles, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(_deathSound, transform.position);
     }
 }

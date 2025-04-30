@@ -57,6 +57,7 @@
     flex-basis: auto;
     background-repeat: no-repeat no-repeat;
     -unity-background-scale-mode: scale-and-crop;
+    transition-duration: 0.15s;
 }
 
 .button {
@@ -82,6 +83,8 @@
     border-right-color: rgb(31, 31, 31);
     border-top-color: rgb(31, 31, 31);
     border-bottom-color: rgb(31, 31, 31);
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
 }
 
 .button:checked {
@@ -126,4 +129,10 @@
 }
 
 .unity-progress-bar__container {
+}
+
+.panel:disabled {
+    opacity: 0;
+    scale: 1 1;
+    translate: 100px 0;
 }

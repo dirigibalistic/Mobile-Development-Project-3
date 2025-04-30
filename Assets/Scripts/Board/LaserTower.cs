@@ -5,6 +5,7 @@ public class LaserTower : Tower
 {
     [SerializeField, Range(1f, 100f)] private float _damagePerSecond = 10f;
     [SerializeField] private Transform _turret, _laserBeam;
+    private AudioSource _audioSource;
 
     private TargetPoint _target;
     private Vector3 _laserBeamScale;
@@ -15,6 +16,7 @@ public class LaserTower : Tower
 
     private void Awake()
     {
+        _audioSource = GetComponent<AudioSource>();
         _laserBeamScale = _laserBeam.localScale;
     }
 
@@ -23,9 +25,14 @@ public class LaserTower : Tower
         base.GameUpdate();
         if (TrackTarget(ref _target) || AcquireTarget(out _target))
         {
+            if(!_audioSource.isPlaying) _audioSource.Play();
             Shoot();
         }
-        else _laserBeam.localScale = Vector3.zero;
+        else
+        {
+            _audioSource.Stop();
+            _laserBeam.localScale = Vector3.zero;
+        }
 
         //search for target
     }
