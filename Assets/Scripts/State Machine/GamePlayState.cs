@@ -19,6 +19,7 @@ public class GamePlayState : State
         _controller.Input.TouchStarted += BoardTouch;
         _controller.BoardController.OnRoundWon += WinRound;
         _controller.PlayerData.OnPlayerDeath += LoseRound;
+        _controller.AudioPlayer.PlayCombatMusic();
 
         Debug.Log("Entered state: GAMEPLAY");
     }
@@ -29,6 +30,7 @@ public class GamePlayState : State
         _controller.Input.TouchStarted -= BoardTouch;
         _controller.BoardController.OnRoundWon -= WinRound;
         _controller.PlayerData.OnPlayerDeath -= LoseRound;
+        _controller.AudioPlayer.StopMusic();
     }
 
     public override void FixedTick()

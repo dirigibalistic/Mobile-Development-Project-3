@@ -1,15 +1,18 @@
+using DG.Tweening;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class GameHUDController : MonoBehaviour
 {
     private GameController _gameController;
-    [SerializeField] private AudioClip _buttonSound;
-    [SerializeField] private AudioClip _startRoundSound;
 
     private UIDocument _document;
-    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu;
+    private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu, _coinIcon;
+    private int _currentCoinFrame;
+    [SerializeField] private List<Texture2D> _coinFrames = new List<Texture2D>();
 
     private Button _winExitButton, _loseExitButton;
     private Button _buildButton, _destroyButton, _wallButton, _laserButton, _mortarButton, _arrowsButton, _gridButton, _pauseButton, _startButton, _winNextRoundButton, _loseRestartButton;
@@ -18,6 +21,9 @@ public class GameHUDController : MonoBehaviour
     private bool _gamePaused = false;
 
     public event Action OnStartRoundPressed;
+
+    private UnityEngine.UI.Image _fadeImage;
+    private float _fadeTime = 0.5f;
 
     private void Awake()
     {
@@ -28,6 +34,7 @@ public class GameHUDController : MonoBehaviour
         _loseMenu = _document.rootVisualElement.Q("LoseMenu");
         _gameHUD = _document.rootVisualElement.Q("GameHUD");
         _buildMenu = _gameHUD.Q("BuildMenu");
+        _coinIcon = _gameHUD.Q("CoinIcon");
 
         _winExitButton = _winMenu.Q("WinExitButton") as Button;
         _loseExitButton = _loseMenu.Q("LoseExitButton") as Button;
@@ -47,13 +54,20 @@ public class GameHUDController : MonoBehaviour
         _moneyLabel = _gameHUD.Q("MoneyLabel") as Label;
         _healthBar = _gameHUD.Q("HealthBar") as ProgressBar;
 
+        _fadeImage = GetComponentInChildren<UnityEngine.UI.Image>();
 
-        //i'm going insane. there must be an easier way to do this.
+        //i'm going insane. there must be an easier way get all of these at once.
     }
 
     private void Start()
     {
         HideAllMenus();
+        _fadeImage.DOFade(0, _fadeTime);
+        _coinIcon.schedule.Execute(UpdateCoin).Every(84);
+    }
+
+    private void Update()
+    {
     }
 
     private void OnEnable()
@@ -96,12 +110,6 @@ public class GameHUDController : MonoBehaviour
         _startButton.UnregisterCallback<ClickEvent>(StartRound);
     }
 
-    private void ExitToMenu(ClickEvent evt)
-    {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
-        _gameController.SceneManager.ExitToMenu();
-    }
-
     public void ShowWinMenu()
     {
         HideAllMenus();
@@ -122,7 +130,7 @@ public class GameHUDController : MonoBehaviour
 
     public void ToggleBuildMenu(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _buildMenu.SetEnabled(!_buildMenu.enabledInHierarchy);
     }
 
@@ -135,42 +143,42 @@ public class GameHUDController : MonoBehaviour
 
     private void SelectEmpty(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.SetSelectedContent(GameTileContentType.Empty);
     }
 
     private void SelectWall(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.SetSelectedContent(GameTileContentType.Wall);
     }
 
     private void SelectLaser(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.SetSelectedContent(GameTileContentType.LaserTower);
     }
 
     private void SelectMortar(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.SetSelectedContent(GameTileContentType.MortarTower);
     }
     private void ToggleGrid(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.ToggleGrid();
     }
 
     private void ToggleArrows(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.BoardController.ToggleArrows();
     }
 
     private void TogglePause(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gamePaused = !_gamePaused;
         if (_gamePaused)
         {
@@ -184,7 +192,7 @@ public class GameHUDController : MonoBehaviour
 
     private void StartRound(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_startRoundSound, 0.5f);
+        _gameController.AudioPlayer.PlayStartRoundSound();
         OnStartRoundPressed?.Invoke();
     }
 
@@ -200,13 +208,40 @@ public class GameHUDController : MonoBehaviour
 
     private void NextRound(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        _gameController.AudioPlayer.PlayButtonSound();
         _gameController.PlayerData.NextRound();
+    }
+
+    private void ExitToMenu(ClickEvent evt)
+    {
+        _fadeImage.DOFade(1, _fadeTime);
+        _gameController.AudioPlayer.PlayButtonSound();
+        StartCoroutine(ExitToMenu());
+    }
+    private IEnumerator ExitToMenu()
+    {
+        yield return new WaitForSeconds(_fadeTime);
+        _gameController.SceneManager.LoadMenu();
     }
 
     private void RestartRound(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
-        _gameController.SceneManager.RestartRound();
+        _fadeImage.DOFade(1, _fadeTime);
+        _gameController.AudioPlayer.PlayButtonSound();
+        StartCoroutine(RestartRound());
+    }
+    private IEnumerator RestartRound()
+    {
+        yield return new WaitForSeconds(_fadeTime);
+        _gameController.SceneManager.LoadMainLevel();
+    }
+
+    private void UpdateCoin()
+    {
+        if (_coinFrames.Count == 0) return;
+
+        _currentCoinFrame = (_currentCoinFrame + 1) % _coinFrames.Count;
+        var frame = _coinFrames[_currentCoinFrame];
+        _coinIcon.style.backgroundImage = frame;
     }
 }

@@ -1,7 +1,5 @@
-using UnityEngine;
 using System;
-using UnityEngine.Timeline;
-using UnityEngine.Audio;
+using UnityEngine;
 
 public class GameBoardController : MonoBehaviour
 {
@@ -33,8 +31,6 @@ public class GameBoardController : MonoBehaviour
 
     static GameBoardController instance;
     private GameController _gameController;
-
-    [SerializeField] private AudioClip _buttonSound;
 
     private void Awake()
     {
@@ -89,7 +85,7 @@ public class GameBoardController : MonoBehaviour
                 Debug.Log("Not enough money");
             }
 
-            AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+            _gameController.AudioPlayer.PlayButtonSound();
         }
     }
 

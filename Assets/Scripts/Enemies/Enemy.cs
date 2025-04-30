@@ -64,6 +64,7 @@ public class Enemy : GameBehavior
         {
             if(_tileTo == null)
             {
+                AudioSource.PlayClipAtPoint(_deathSound, transform.position);
                 _boardController.EnemyReachedDestination(_damage); //reached destination, damage player
                 OriginFactory.Reclaim(this);
                 return false;

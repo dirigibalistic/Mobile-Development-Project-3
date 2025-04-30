@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class GameSceneManager : MonoBehaviour
 {
-    public void ExitToMenu()
+    public void LoadMenu()
     {
         SceneManager.LoadScene("MainMenu");
     }
@@ -13,7 +13,7 @@ public class GameSceneManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void RestartRound()
+    public void LoadMainLevel()
     {
         SceneManager.LoadScene("Level1");
     }

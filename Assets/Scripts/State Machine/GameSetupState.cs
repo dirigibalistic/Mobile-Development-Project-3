@@ -24,7 +24,7 @@ public class GameSetupState : State
         //12 is the biggest that can fit on screen without zooming out so much it's unreadable to me
 
         int spawnPointsNumber = currentRound / 2 + 1;
-        int totalEnemies = currentRound * 10;
+        int totalEnemies = (currentRound + 1) * 10;
 
         _controller.BoardController.InitializeBoard(new Vector2Int(boardLength,boardLength), spawnPointsNumber, totalEnemies);
         _controller.PlayerData.NewRoundReset();

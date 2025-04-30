@@ -19,6 +19,7 @@ public class GamePreparationState : State
         _controller.Input.TouchStarted += BoardTouch;
         _controller.HUDController.OnStartRoundPressed += StartRoundPressed;
         _controller.HUDController.ShowGameHUD();
+        _controller.AudioPlayer.PlayPrepMusic();
 
         Debug.Log("Entered state: PREPARATION");
         //let player place turrets
@@ -30,6 +31,7 @@ public class GamePreparationState : State
         base.Exit();
         _controller.Input.TouchStarted -= BoardTouch;
         _controller.HUDController.OnStartRoundPressed -= StartRoundPressed;
+        _controller.AudioPlayer.StopMusic();
     }
 
     public override void FixedTick()

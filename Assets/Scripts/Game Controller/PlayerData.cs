@@ -13,7 +13,7 @@ public class PlayerData : MonoBehaviour
     private int _money;
     public int Money => _money;
 
-    private int _currentRound = 1;
+    private int _currentRound = 0;
     public int CurrentRound => _currentRound;
 
     private GameController _gameController;
