@@ -22,7 +22,7 @@ public class GameSetupState : State
 
         //boards all square for now, could add more variety later.
         //5 feels like the bare minimum to be playable
-        //12 is the biggest that can fit on screen without zooming out so much it's unreadable to me
+        //12 is kind of arbitrary but don't want to zoom out so much it's unreadable
 
         int spawnPointsNumber = currentRound / 2 + 1;
         int totalEnemies = currentRound * 10;

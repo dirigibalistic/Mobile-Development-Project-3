@@ -8,6 +8,8 @@ public class AudioPlayer : MonoBehaviour
     [SerializeField] private AudioClip _buttonSound;
     [SerializeField] private AudioClip _startRoundSound;
     [SerializeField] private AudioClip _playerDamageSound;
+    [SerializeField] private AudioClip _loseSound;
+    [SerializeField] private AudioClip _winSound;
 
     private AudioSource _audioSource;
 
@@ -41,5 +43,14 @@ public class AudioPlayer : MonoBehaviour
     public void StopMusic()
     {
        _audioSource.Stop();
+    }
+
+    public void PlayWinSound()
+    {
+        AudioHelper.PlayClip2D(_winSound, 0.5f, true);
+    }
+    public void PlayLoseSound()
+    {
+        AudioHelper.PlayClip2D(_loseSound, 0.5f, true);
     }
 }

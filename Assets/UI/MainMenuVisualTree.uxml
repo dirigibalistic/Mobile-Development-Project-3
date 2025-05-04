@@ -1,7 +1,7 @@
 <engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/MenuStyle.uss?fileID=7433441132597879392&amp;guid=620184f79668714498b709f657f60cbe&amp;type=3#MenuStyle" />
     <engine:VisualElement name="Background" enabled="true" style="flex-grow: 1; background-color: rgb(197, 179, 114); background-image: url(&quot;project://database/Assets/Textures/UIBackground.png?fileID=2800000&amp;guid=2989f90b4b50bc24589536cee439e200&amp;type=3#UIBackground&quot;);">
-        <engine:VisualElement enabled="true" name="MainMenuPanel" style="flex-grow: 1;">
+        <engine:VisualElement enabled="false" name="MainMenuPanel" style="flex-grow: 1;">
             <engine:Label text="The Crow&apos;s Nest" name="TitleLabel" emoji-fallback-support="false" enabled="true" class="header" />
             <engine:VisualElement style="flex-grow: 1; flex-direction: row;">
                 <engine:VisualElement style="flex-grow: 1; justify-content: space-between;">

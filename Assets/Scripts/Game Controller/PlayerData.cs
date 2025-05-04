@@ -13,6 +13,7 @@ public class PlayerData : MonoBehaviour
     private int _money;
     public int Money => _money;
 
+    [SerializeField]
     private int _currentRound = 1;
     public int CurrentRound => _currentRound;
 

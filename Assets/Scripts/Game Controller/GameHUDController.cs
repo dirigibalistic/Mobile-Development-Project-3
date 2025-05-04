@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class GameHUDController : MonoBehaviour
 {
-    private GameController _gameController;
+    private GameController _controller;
 
     private UIDocument _document;
     private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu, _coinIcon;
@@ -26,11 +26,11 @@ public class GameHUDController : MonoBehaviour
 
     [SerializeField] private UnityEngine.UI.Image _fadeImage;
     [SerializeField] private UnityEngine.UI.Image _vignetteImage;
-    private float _fadeTime = 0.5f;
+    private float _fadeTime = 0.5f, _pauseFadeTime = 0.25f;
 
     private void Awake()
     {
-        _gameController = GetComponentInParent<GameController>();
+        _controller = GetComponentInParent<GameController>();
 
         _document = GetComponent<UIDocument>();
         _winMenu = _document.rootVisualElement.Q("WinMenu");
@@ -117,12 +117,16 @@ public class GameHUDController : MonoBehaviour
     public void ShowWinMenu()
     {
         HideAllMenus();
+        AudioListener.pause = true;
+        _controller.AudioPlayer.PlayWinSound();
         _winMenu.style.display = DisplayStyle.Flex;
     }
 
     public void ShowLoseMenu()
     {
         HideAllMenus();
+        AudioListener.pause = true;
+        _controller.AudioPlayer.PlayLoseSound();
         _loseMenu.style.display = DisplayStyle.Flex;
     }
 
@@ -134,7 +138,7 @@ public class GameHUDController : MonoBehaviour
 
     public void ToggleBuildMenu(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
+        _controller.AudioPlayer.PlayButtonSound();
         _buildMenu.SetEnabled(!_buildMenu.enabledInHierarchy);
     }
 
@@ -147,56 +151,56 @@ public class GameHUDController : MonoBehaviour
 
     private void SelectEmpty(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.SetSelectedContent(GameTileContentType.Empty);
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.SetSelectedContent(GameTileContentType.Empty);
     }
 
     private void SelectWall(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.SetSelectedContent(GameTileContentType.Wall);
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.SetSelectedContent(GameTileContentType.Wall);
     }
 
     private void SelectLaser(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.SetSelectedContent(GameTileContentType.LaserTower);
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.SetSelectedContent(GameTileContentType.LaserTower);
     }
 
     private void SelectMortar(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.SetSelectedContent(GameTileContentType.MortarTower);
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.SetSelectedContent(GameTileContentType.MortarTower);
     }
     private void ToggleGrid(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.ToggleGrid();
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.ToggleGrid();
     }
 
     private void ToggleArrows(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.BoardController.ToggleArrows();
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.BoardController.ToggleArrows();
     }
 
     private void TogglePause(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
+        _controller.AudioPlayer.PlayButtonSound();
         _gamePaused = !_gamePaused;
         if (_gamePaused)
         {
             AudioListener.pause = true;
             _pauseButton.style.backgroundImage = _playIcon;
-            _vignetteImage.DOFade(1, _fadeTime).SetUpdate(true);
-            StartCoroutine(FadeTimeScale(0, _fadeTime));
+            _vignetteImage.DOFade(1, _pauseFadeTime).SetUpdate(true);
+            StartCoroutine(FadeTimeScale(0, _pauseFadeTime));
         }
         else 
         {
             AudioListener.pause = false;
             _pauseButton.style.backgroundImage = _pauseIcon;
-            _vignetteImage.DOFade(0, _fadeTime).SetUpdate(true);
-            StartCoroutine(FadeTimeScale(1, _fadeTime));
+            _vignetteImage.DOFade(0, _pauseFadeTime).SetUpdate(true);
+            StartCoroutine(FadeTimeScale(1, _pauseFadeTime));
         }
     }
     private IEnumerator FadeTimeScale(float fadeTo, float duration)
@@ -227,7 +231,7 @@ public class GameHUDController : MonoBehaviour
 
     private void StartRound(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayStartRoundSound();
+        _controller.AudioPlayer.PlayStartRoundSound();
         OnStartRoundPressed?.Invoke();
     }
 
@@ -248,32 +252,35 @@ public class GameHUDController : MonoBehaviour
 
     private void NextRound(ClickEvent evt)
     {
-        _gameController.AudioPlayer.PlayButtonSound();
-        _gameController.PlayerData.NextRound();
+        AudioListener.pause = false;
+        _controller.AudioPlayer.PlayButtonSound();
+        _controller.PlayerData.NextRound();
     }
 
     private void ExitToMenu(ClickEvent evt)
     {
         _fadeImage.DOFade(1, _fadeTime);
-        _gameController.AudioPlayer.PlayButtonSound();
+        _controller.AudioPlayer.PlayButtonSound();
         StartCoroutine(ExitToMenu());
     }
     private IEnumerator ExitToMenu()
     {
         yield return new WaitForSeconds(_fadeTime);
-        _gameController.SceneManager.LoadMenu();
+        AudioListener.pause = false;
+        _controller.SceneManager.LoadMenu();
     }
 
     private void RestartRound(ClickEvent evt)
     {
         _fadeImage.DOFade(1, _fadeTime);
-        _gameController.AudioPlayer.PlayButtonSound();
+        _controller.AudioPlayer.PlayButtonSound();
         StartCoroutine(RestartRound());
     }
     private IEnumerator RestartRound()
     {
         yield return new WaitForSeconds(_fadeTime);
-        _gameController.SceneManager.LoadMainLevel();
+        AudioListener.pause = false;
+        _controller.SceneManager.LoadMainLevel();
     }
 
     private void UpdateCoin()
