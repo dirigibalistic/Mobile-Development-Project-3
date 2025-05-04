@@ -53,8 +53,9 @@ public class LaserTower : Tower
     private void Shoot()
     {
         Vector3 point = _target.Position;
-        _turret.LookAt(point);
-        _laserBeam.localRotation = _turret.localRotation;
+        _laserBeam.LookAt(point);
+        Vector3 turretLookPoint = new Vector3(point.x, _turret.position.y, point.z);
+        _turret.LookAt(turretLookPoint);
 
         float d = Vector3.Distance(_turret.position, point);
         _laserBeamScale.z = d;

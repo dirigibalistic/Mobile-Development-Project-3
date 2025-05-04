@@ -5,8 +5,8 @@ using UnityEngine.InputSystem;
 public class InputBroadcaster : MonoBehaviour
 {
     private InputSystem_Actions _inputSystemActions;
-    public event Action<Vector2> TouchStarted;
-    public event Action<Vector2> TouchEnded;
+    public event Action<Vector2> TouchHoldChanged;
+    public event Action<Vector2> TouchTapPerformed;
     public Vector2 TouchStartPosition { get; private set; }
     public Vector2 TouchCurrentPosition { get; private set; }
     public bool TouchHeld { get; private set; } = false;
@@ -19,45 +19,50 @@ public class InputBroadcaster : MonoBehaviour
     private void OnEnable()
     {
         _inputSystemActions.Enable();
-        _inputSystemActions.Player.TouchPoint.performed += OnTouchPerformed;
-        _inputSystemActions.Player.TouchPoint.canceled += OnTouchCancelled;
+        _inputSystemActions.Player.TouchHold.performed += OnTouchHoldStart;
+        _inputSystemActions.Player.TouchHold.canceled += OnTouchHoldEnd;
+        _inputSystemActions.Player.TouchTap.performed += OnTouchTap;
     }
 
     private void OnDisable()
     {
-        _inputSystemActions.Player.TouchPoint.performed -= OnTouchPerformed;
-        _inputSystemActions.Player.TouchPoint.canceled -= OnTouchCancelled;
+        _inputSystemActions.Player.TouchHold.performed -= OnTouchHoldStart;
+        _inputSystemActions.Player.TouchHold.canceled -= OnTouchHoldEnd;
+        _inputSystemActions.Player.TouchTap.performed -= OnTouchTap;
         _inputSystemActions.Disable();
     }
 
-    private void OnTouchPerformed(InputAction.CallbackContext context)
+    private void OnTouchHoldStart(InputAction.CallbackContext context)
     {
-        //Debug.Log("Touch");
         TouchHeld = true;
         Vector2 TouchPosition = context.ReadValue<Vector2>();
         TouchStartPosition = TouchPosition;
         TouchCurrentPosition = TouchPosition;
-        TouchStarted?.Invoke(TouchPosition);
         //Debug.Log("Touch Start Position: " + TouchStartPosition);
     }
 
-    private void OnTouchCancelled(InputAction.CallbackContext context)
+    private void OnTouchHoldEnd(InputAction.CallbackContext context)
     {
-        //Debug.Log("Release");
         TouchHeld = false;
-
-        TouchEnded?.Invoke(TouchCurrentPosition);
         //Debug.Log("Touch End Position: " + TouchCurrentPosition);
 
         TouchStartPosition = Vector2.zero;
         TouchCurrentPosition = Vector2.zero;
     }
 
+    private void OnTouchTap(InputAction.CallbackContext context)
+    {
+        TouchTapPerformed?.Invoke(context.ReadValue<Vector2>());
+    }
+
     private void Update()
     {
         if (TouchHeld)
         {
-            TouchCurrentPosition = _inputSystemActions.Player.TouchPoint.ReadValue<Vector2>();
+            Vector2 touchLastPosition = TouchCurrentPosition;
+            TouchCurrentPosition = _inputSystemActions.Player.TouchHold.ReadValue<Vector2>();
+            Vector2 touchDelta = TouchCurrentPosition - touchLastPosition;
+            TouchHoldChanged?.Invoke(touchDelta);
         }
     }
 }

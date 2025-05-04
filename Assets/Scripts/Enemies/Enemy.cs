@@ -12,6 +12,7 @@ public class Enemy : GameBehavior
     [SerializeField] private int _damage;
 
     [SerializeField] private ParticleSystem _deathParticles;
+    [SerializeField] private ParticleSystem _hitPlayerParticles;
     [SerializeField] private AudioClip _deathSound;
 
     private GameBoardController _boardController;
@@ -65,6 +66,7 @@ public class Enemy : GameBehavior
             if(_tileTo == null)
             {
                 AudioSource.PlayClipAtPoint(_deathSound, transform.position);
+                Instantiate(_hitPlayerParticles, transform.position, Quaternion.identity);
                 _boardController.EnemyReachedDestination(_damage); //reached destination, damage player
                 OriginFactory.Reclaim(this);
                 return false;

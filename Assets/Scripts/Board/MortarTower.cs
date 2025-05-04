@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.WSA;
 
 public class MortarTower : Tower
 {
@@ -67,7 +66,9 @@ public class MortarTower : Tower
         float cosTheta = Mathf.Cos(Mathf.Atan(tanTheta));
         float sinTheta = cosTheta * tanTheta;
 
-        _mortar.localRotation = Quaternion.LookRotation(new Vector3(dir.x, tanTheta, dir.y));
+        //_mortar.localRotation = Quaternion.LookRotation(new Vector3(dir.x, tanTheta, dir.y));
+        Vector3 lookPoint = new Vector3(target.Position.x, _mortar.position.y, target.Position.z);
+        _mortar.LookAt(lookPoint);
 
         AudioSource.PlayClipAtPoint(_fireSound, transform.position);
         GameBoardController.SpawnShell().Initialize(launchPoint, targetPoint, new Vector3(s * cosTheta * dir.x, s * sinTheta, s * cosTheta * dir.y), _shellBlastRadius, _shellDamage);

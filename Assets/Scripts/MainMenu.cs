@@ -1,12 +1,8 @@
-using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEngine.SceneManagement;
 using DG.Tweening;
-using System;
-using Unity.VisualScripting;
-using UnityEngine.Rendering;
-using UnityEditor.UIElements;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class MainMenu : MonoBehaviour
 {
@@ -17,7 +13,7 @@ public class MainMenu : MonoBehaviour
     private Label _highestLevelText;
     private int _highestLevel;
 
-    private VisualElement _titleLabel, _subtitleLabel, _menuContainer;
+    private VisualElement _mainMenuPanel;
     private UnityEngine.UI.Image _fadeImage;
     private float _fadeTime = 0.5f;
 
@@ -40,9 +36,7 @@ public class MainMenu : MonoBehaviour
         _exitButton.RegisterCallback<ClickEvent>(OnExitGameClick);
         _resetScoreButton.RegisterCallback<ClickEvent>(OnResetScoreClick);
 
-        _titleLabel = _mainMenu.rootVisualElement.Q("TitleLabel");
-        _subtitleLabel = _mainMenu.rootVisualElement.Q("SubtitleLabel");
-        _menuContainer = _mainMenu.rootVisualElement.Q("MenuContainer");
+        _mainMenuPanel = _mainMenu.rootVisualElement.Q("MainMenuPanel");
 
         _highestLevelText.text = "Highest Level: " + _highestLevel.ToString();
 
@@ -66,7 +60,7 @@ public class MainMenu : MonoBehaviour
 
     private void OnResetScoreClick(ClickEvent evt)
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f, true);
         SaveManager.Instance.ActiveSaveData.HighestLevel = 0;
         _highestLevelText.text = "Highest Level: 0";
         SaveManager.Instance.Save();
@@ -75,34 +69,30 @@ public class MainMenu : MonoBehaviour
     private void OnStartGameClick(ClickEvent evt)
     {
         _fadeImage.DOFade(1, 0.5f);
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f, true);
         StartCoroutine(StartGame());
     }
-
-    private void OnExitGameClick(ClickEvent evt)
-    {
-        _fadeImage.DOFade(1, 0.5f);
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
-        StartCoroutine(ExitGame());
-    }
-
-    private void ShowMainMenu()
-    {
-        _fadeImage.DOFade(0, 0.5f);
-        _titleLabel.SetEnabled(true); 
-        _subtitleLabel.SetEnabled(true);
-        _menuContainer.SetEnabled(true);
-    }
-
     private IEnumerator StartGame()
     {
         yield return new WaitForSeconds(_fadeTime);
         SceneManager.LoadScene(_startLevelName);
     }
 
+    private void OnExitGameClick(ClickEvent evt)
+    {
+        _fadeImage.DOFade(1, 0.5f);
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f, true);
+        StartCoroutine(ExitGame());
+    }
     private IEnumerator ExitGame()
     {
         yield return new WaitForSeconds(_fadeTime);
         Application.Quit();
+    }
+
+    private void ShowMainMenu()
+    {
+        _fadeImage.DOFade(0, 0.5f);
+        _mainMenuPanel.SetEnabled(true);
     }
 }

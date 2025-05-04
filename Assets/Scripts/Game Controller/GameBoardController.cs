@@ -149,7 +149,11 @@ public class GameBoardController : MonoBehaviour
     {
         _totalEnemiesToSpawn = totalEnemyNumber;
         _spawnsRemaining = _totalEnemiesToSpawn;
+        _spawnProgress = 0;
         _enemiesKilled = 0;
+
+        _nonEnemies.Reset();
+        _enemies.Reset();
 
         _board.Initialize(size, _tileContentFactory, spawnPointNumber);
     }

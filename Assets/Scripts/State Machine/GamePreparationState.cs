@@ -16,7 +16,7 @@ public class GamePreparationState : State
     public override void Enter()
     {
         base.Enter();
-        _controller.Input.TouchStarted += BoardTouch;
+        _controller.Input.TouchTapPerformed += BoardTouch;
         _controller.HUDController.OnStartRoundPressed += StartRoundPressed;
         _controller.HUDController.ShowGameHUD();
         _controller.AudioPlayer.PlayPrepMusic();
@@ -29,7 +29,7 @@ public class GamePreparationState : State
     public override void Exit()
     {
         base.Exit();
-        _controller.Input.TouchStarted -= BoardTouch;
+        _controller.Input.TouchTapPerformed -= BoardTouch;
         _controller.HUDController.OnStartRoundPressed -= StartRoundPressed;
         _controller.AudioPlayer.StopMusic();
     }

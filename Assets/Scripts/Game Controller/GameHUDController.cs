@@ -13,16 +13,19 @@ public class GameHUDController : MonoBehaviour
     private VisualElement _winMenu, _loseMenu, _gameHUD, _buildMenu, _coinIcon;
     private int _currentCoinFrame;
     [SerializeField] private List<Texture2D> _coinFrames = new List<Texture2D>();
+    [SerializeField] private Texture2D _pauseIcon;
+    [SerializeField] private Texture2D _playIcon;
 
     private Button _winExitButton, _loseExitButton;
     private Button _buildButton, _destroyButton, _wallButton, _laserButton, _mortarButton, _arrowsButton, _gridButton, _pauseButton, _startButton, _winNextRoundButton, _loseRestartButton;
-    private Label _moneyLabel;
+    private Label _moneyLabel, _roundLabel;
     private ProgressBar _healthBar;
     private bool _gamePaused = false;
 
     public event Action OnStartRoundPressed;
 
-    private UnityEngine.UI.Image _fadeImage;
+    [SerializeField] private UnityEngine.UI.Image _fadeImage;
+    [SerializeField] private UnityEngine.UI.Image _vignetteImage;
     private float _fadeTime = 0.5f;
 
     private void Awake()
@@ -52,6 +55,7 @@ public class GameHUDController : MonoBehaviour
         _startButton = _gameHUD.Q("StartButton") as Button;
 
         _moneyLabel = _gameHUD.Q("MoneyLabel") as Label;
+        _roundLabel = _gameHUD.Q("RoundLabel") as Label;
         _healthBar = _gameHUD.Q("HealthBar") as ProgressBar;
 
         _fadeImage = GetComponentInChildren<UnityEngine.UI.Image>();
@@ -182,12 +186,43 @@ public class GameHUDController : MonoBehaviour
         _gamePaused = !_gamePaused;
         if (_gamePaused)
         {
-            Time.timeScale = 0;
+            AudioListener.pause = true;
+            _pauseButton.style.backgroundImage = _playIcon;
+            _vignetteImage.DOFade(1, _fadeTime).SetUpdate(true);
+            StartCoroutine(FadeTimeScale(0, _fadeTime));
         }
         else 
         {
-            Time.timeScale = 1; 
+            AudioListener.pause = false;
+            _pauseButton.style.backgroundImage = _pauseIcon;
+            _vignetteImage.DOFade(0, _fadeTime).SetUpdate(true);
+            StartCoroutine(FadeTimeScale(1, _fadeTime));
         }
+    }
+    private IEnumerator FadeTimeScale(float fadeTo, float duration)
+    {
+        float value = Time.timeScale;
+
+        if (fadeTo < Time.timeScale)
+        {
+            while (value > fadeTo)
+            {
+                value -= Time.unscaledDeltaTime / duration;
+                if (value < fadeTo) value = fadeTo;
+                Time.timeScale = value;
+                yield return null;
+            }
+        }
+        else if (fadeTo > Time.timeScale)
+        {
+            while (value < fadeTo)
+            {
+                value += Time.unscaledDeltaTime / duration;
+                if (value > fadeTo) value = fadeTo;
+                Time.timeScale = value;
+                yield return null;
+            }
+        }        
     }
 
     private void StartRound(ClickEvent evt)
@@ -196,7 +231,7 @@ public class GameHUDController : MonoBehaviour
         OnStartRoundPressed?.Invoke();
     }
 
-    internal void UpdateHealthDisplay(float percent)
+    internal void UpdateHealthDisplay(float percent) //visual studio keeps changing my functions from public to internal. I have no idea if that's good or bad
     {
         _healthBar.value = percent;
     }
@@ -204,6 +239,11 @@ public class GameHUDController : MonoBehaviour
     internal void UpdateMoneyText(int money)
     {
         _moneyLabel.text = money.ToString();
+    }
+
+    public void UpdateRoundText(int round)
+    {
+        _roundLabel.text = "ROUND: " + round.ToString();
     }
 
     private void NextRound(ClickEvent evt)

@@ -92,9 +92,18 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
             ""actions"": [
                 {
-                    ""name"": ""TouchPoint"",
+                    ""name"": ""TouchHold"",
                     ""type"": ""Button"",
                     ""id"": ""b9495b87-bb14-450a-ad2a-b332633b796f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TouchTap"",
+                    ""type"": ""Button"",
+                    ""id"": ""1afd8272-85d5-46b8-bdc2-0d13812b40dd"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -109,7 +118,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TouchPoint"",
+                    ""action"": ""TouchHold"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -120,7 +129,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TouchPoint"",
+                    ""action"": ""TouchHold"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -131,7 +140,40 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TouchPoint"",
+                    ""action"": ""TouchHold"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""8d645d10-5ca4-43d4-9ce7-705036c74ffc"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchTap"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""cb6f6173-7f3d-4210-a4ec-d050c3bc5dc6"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchTap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""e7b6adfb-75cb-48dd-9e86-0bac3476a141"",
+                    ""path"": ""<Touchscreen>/position"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TouchTap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 }
@@ -719,7 +761,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_TouchPoint = m_Player.FindAction("TouchPoint", throwIfNotFound: true);
+        m_Player_TouchHold = m_Player.FindAction("TouchHold", throwIfNotFound: true);
+        m_Player_TouchTap = m_Player.FindAction("TouchTap", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -813,7 +856,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // Player
     private readonly InputActionMap m_Player;
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
-    private readonly InputAction m_Player_TouchPoint;
+    private readonly InputAction m_Player_TouchHold;
+    private readonly InputAction m_Player_TouchTap;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -826,9 +870,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public PlayerActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Player/TouchPoint".
+        /// Provides access to the underlying input action "Player/TouchHold".
         /// </summary>
-        public InputAction @TouchPoint => m_Wrapper.m_Player_TouchPoint;
+        public InputAction @TouchHold => m_Wrapper.m_Player_TouchHold;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/TouchTap".
+        /// </summary>
+        public InputAction @TouchTap => m_Wrapper.m_Player_TouchTap;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -855,9 +903,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerActionsCallbackInterfaces.Add(instance);
-            @TouchPoint.started += instance.OnTouchPoint;
-            @TouchPoint.performed += instance.OnTouchPoint;
-            @TouchPoint.canceled += instance.OnTouchPoint;
+            @TouchHold.started += instance.OnTouchHold;
+            @TouchHold.performed += instance.OnTouchHold;
+            @TouchHold.canceled += instance.OnTouchHold;
+            @TouchTap.started += instance.OnTouchTap;
+            @TouchTap.performed += instance.OnTouchTap;
+            @TouchTap.canceled += instance.OnTouchTap;
         }
 
         /// <summary>
@@ -869,9 +920,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="PlayerActions" />
         private void UnregisterCallbacks(IPlayerActions instance)
         {
-            @TouchPoint.started -= instance.OnTouchPoint;
-            @TouchPoint.performed -= instance.OnTouchPoint;
-            @TouchPoint.canceled -= instance.OnTouchPoint;
+            @TouchHold.started -= instance.OnTouchHold;
+            @TouchHold.performed -= instance.OnTouchHold;
+            @TouchHold.canceled -= instance.OnTouchHold;
+            @TouchTap.started -= instance.OnTouchTap;
+            @TouchTap.performed -= instance.OnTouchTap;
+            @TouchTap.canceled -= instance.OnTouchTap;
         }
 
         /// <summary>
@@ -1173,12 +1227,19 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         /// <summary>
-        /// Method invoked when associated input action "TouchPoint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "TouchHold" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnTouchPoint(InputAction.CallbackContext context);
+        void OnTouchHold(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "TouchTap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTouchTap(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

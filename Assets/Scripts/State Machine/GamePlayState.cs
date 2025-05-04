@@ -16,7 +16,7 @@ public class GamePlayState : State
     {
         base.Enter();
         _controller.HUDController.ShowGameHUD();
-        _controller.Input.TouchStarted += BoardTouch;
+        _controller.Input.TouchTapPerformed += BoardTouch;
         _controller.BoardController.OnRoundWon += WinRound;
         _controller.PlayerData.OnPlayerDeath += LoseRound;
         _controller.AudioPlayer.PlayCombatMusic();
@@ -27,7 +27,7 @@ public class GamePlayState : State
     public override void Exit()
     {
         base.Exit();
-        _controller.Input.TouchStarted -= BoardTouch;
+        _controller.Input.TouchTapPerformed -= BoardTouch;
         _controller.BoardController.OnRoundWon -= WinRound;
         _controller.PlayerData.OnPlayerDeath -= LoseRound;
         _controller.AudioPlayer.StopMusic();

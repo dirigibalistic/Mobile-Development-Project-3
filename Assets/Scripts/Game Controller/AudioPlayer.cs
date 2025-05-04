@@ -18,12 +18,12 @@ public class AudioPlayer : MonoBehaviour
 
     public void PlayButtonSound()
     {
-        AudioHelper.PlayClip2D(_buttonSound, 0.5f);
+        AudioHelper.PlayClip2D(_buttonSound, 0.5f, true);
     }
 
     public void PlayStartRoundSound()
     {
-        AudioHelper.PlayClip2D(_startRoundSound, 0.5f);
+        AudioHelper.PlayClip2D(_startRoundSound, 0.5f, true);
     }
 
     public void PlayPrepMusic()

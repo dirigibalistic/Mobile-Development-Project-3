@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameSetupState : State
@@ -24,10 +25,10 @@ public class GameSetupState : State
         //12 is the biggest that can fit on screen without zooming out so much it's unreadable to me
 
         int spawnPointsNumber = currentRound / 2 + 1;
-        int totalEnemies = (currentRound + 1) * 10;
+        int totalEnemies = currentRound * 10;
 
-        _controller.BoardController.InitializeBoard(new Vector2Int(boardLength,boardLength), spawnPointsNumber, totalEnemies);
-        _controller.PlayerData.NewRoundReset();
+        Camera.main.transform.localPosition = new Vector3(0, boardLength, 0);
+        _controller.BoardController.InitializeBoard(new Vector2Int(boardLength, boardLength), spawnPointsNumber, totalEnemies);
     }
 
     public override void Exit()

@@ -16,23 +16,23 @@ public class GameBoard : MonoBehaviour
         {
             _showPaths = value;
             if (_showPaths)
-                foreach(GameTile tile in _tiles)
+                foreach (GameTile tile in _tiles)
                     tile.ShowPath();
-            
+
             else
                 foreach (GameTile tile in _tiles)
                     tile.HidePath();
         }
     }
 
-    private bool _showGrid = true;
+    private bool _showGrid = false;
     public bool ShowGrid
     {
         get => _showGrid;
         set
         {
             _showGrid = value;
-            foreach(GameTile tile in _tiles)
+            foreach (GameTile tile in _tiles)
             {
                 tile.ToggleShowGrid(_showGrid);
             }
@@ -60,21 +60,21 @@ public class GameBoard : MonoBehaviour
         Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 
         #region reset
-        foreach (GameTile tile in FindObjectsByType<GameTile>(FindObjectsSortMode.None))
+        if (_tiles != null)
         {
-            Destroy(tile.gameObject);
-        }
-        foreach(GameTileContent content in FindObjectsByType<GameTileContent>(FindObjectsSortMode.None))
-        {
-            Destroy(content.gameObject);
+            foreach (GameTile tile in _tiles)
+            {
+                Destroy(tile.Content.gameObject);
+                Destroy(tile.gameObject);
+            }
         }
         _spawnPoints = new List<GameTile>();
         _updatingContent = new List<GameTileContent>();
-    #endregion
-    //deletes old tiles, etc. to reinitialize the board for a new wave
-    //this is messy and probably the wrong way to do this but it does seem to work
+        #endregion
+        //deletes old tiles, etc. to reinitialize the board for a new wave
+        //this is messy and probably the wrong way to do this but it does work
 
-    _tiles = new GameTile[size.x * size.y];
+        _tiles = new GameTile[size.x * size.y];
         for (int i = 0, y = 0; y < size.y; y++)
         {
             for (int x = 0; x < size.x; x++, i++)
@@ -83,7 +83,7 @@ public class GameBoard : MonoBehaviour
                 tile.transform.SetParent(transform, false);
                 tile.transform.localPosition = new Vector3(x - offset.x, 0f, y - offset.y);
 
-                if(x > 0)
+                if (x > 0)
                 {
                     GameTile.MakeEastWestNeighbors(tile, _tiles[i - 1]);
                 }
@@ -135,7 +135,7 @@ public class GameBoard : MonoBehaviour
         while (_searchFrontier.Count > 0)
         {
             GameTile tile = _searchFrontier.Dequeue();
-            if(tile != null)
+            if (tile != null)
             {
                 //change search order on alternating tiles, causes "diagonal" movement - looks nicer
                 if (tile.IsAlternative)
@@ -173,7 +173,7 @@ public class GameBoard : MonoBehaviour
         {
             int x = (int)(hit.point.x + _size.x * 0.5f);
             int y = (int)(hit.point.z + _size.y * 0.5f);
-            if(x >= 0 && x < _size.x && y >= 0 && y < _size.y)
+            if (x >= 0 && x < _size.x && y >= 0 && y < _size.y)
                 return _tiles[x + y * _size.x];
         }
         return null;
@@ -194,7 +194,7 @@ public class GameBoard : MonoBehaviour
         {
             tile.Content = _contentFactory.Get(GameTileContentType.Destination);
             FindPaths();
-        } 
+        }
     }
 
     public void ToggleWall(GameTile tile)
@@ -217,15 +217,15 @@ public class GameBoard : MonoBehaviour
 
     public void ToggleSpawnPoint(GameTile tile)
     {
-        if(tile.Content.Type == GameTileContentType.SpawnPoint)
+        if (tile.Content.Type == GameTileContentType.SpawnPoint)
         {
-            if(_spawnPoints.Count > 1)
+            if (_spawnPoints.Count > 1)
             {
                 _spawnPoints.Remove(tile);
                 tile.Content = _contentFactory.Get(GameTileContentType.Empty);
             }
         }
-        else if(tile.Content.Type == GameTileContentType.Empty)
+        else if (tile.Content.Type == GameTileContentType.Empty)
         {
             tile.Content = _contentFactory.Get(GameTileContentType.SpawnPoint);
             _spawnPoints.Add(tile);
@@ -280,7 +280,7 @@ public class GameBoard : MonoBehaviour
 
     public void GameUpdate()
     {
-        for(int i = 0; i < _updatingContent.Count; i++)
+        for (int i = 0; i < _updatingContent.Count; i++)
         {
             _updatingContent[i].GameUpdate();
         }
@@ -314,7 +314,7 @@ public class GameBoard : MonoBehaviour
 
             case GameTileContentType.Wall:
                 tile.Content = _contentFactory.Get(GameTileContentType.Wall);
-                if(FindPaths()) return true;
+                if (FindPaths()) return true;
                 else
                 {
                     Debug.Log("Cannot block all enemy paths");

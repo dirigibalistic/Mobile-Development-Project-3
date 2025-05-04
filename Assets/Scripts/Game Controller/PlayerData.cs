@@ -13,7 +13,7 @@ public class PlayerData : MonoBehaviour
     private int _money;
     public int Money => _money;
 
-    private int _currentRound = 0;
+    private int _currentRound = 1;
     public int CurrentRound => _currentRound;
 
     private GameController _gameController;
@@ -47,7 +47,6 @@ public class PlayerData : MonoBehaviour
         _money -= amount;
         _gameController.HUDController.UpdateMoneyText(_money);
         return true;
-
     }
 
     public void GainMoney(int amount)
@@ -64,12 +63,11 @@ public class PlayerData : MonoBehaviour
     public void NextRound()
     {
         _currentRound++;
-        OnNextRound?.Invoke();
-    }
+        _gameController.HUDController.UpdateRoundText(_currentRound);
 
-    internal void NewRoundReset()
-    {
         _health = _startingHealth;
         _money = _startingMoney;
+
+        OnNextRound?.Invoke();
     }
 }

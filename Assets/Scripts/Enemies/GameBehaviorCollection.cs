@@ -24,4 +24,14 @@ public class GameBehaviorCollection
             }
         }
     }
+
+    public void Reset()
+    {
+        foreach (GameBehavior behavior in _behaviors)
+        {
+            Object.Destroy(behavior?.gameObject);
+        }
+
+        _behaviors.Clear();
+    }
 }
